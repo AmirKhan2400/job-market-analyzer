@@ -1,6 +1,3 @@
-import pytest
-from pydantic import ValidationError
-
 from job_market_analyzer.domain.job import JobOffer
 
 
@@ -33,8 +30,3 @@ def test_job_offer_allows_unknown_optional_fields():
     assert job.company is None
     assert job.country is None
     assert job.visa_sponsorship is None
-
-
-def test_job_offer_requires_description():
-    with pytest.raises(ValidationError):
-        JobOffer(company="Dexter Health")

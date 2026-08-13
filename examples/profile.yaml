@@ -1,0 +1,27 @@
+name: Amir
+
+target_roles:
+  - AI Engineer
+  - ML Engineer
+  - Backend Engineer
+
+skills:
+  - Python
+  - FastAPI
+  - LangGraph
+  - LangChain
+  - RAG
+  - FAISS
+  - Hugging Face
+  - Transformers
+  - QLoRA
+  - Git
+  - GitHub
+
+experience_years: 2
+
+preferred_locations:
+  - Germany
+  - Remote
+
+remote_preference: remote
