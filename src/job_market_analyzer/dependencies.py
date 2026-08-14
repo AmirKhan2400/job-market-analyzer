@@ -5,6 +5,7 @@ from job_market_analyzer.services.ai.gemini import GeminiProvider
 from job_market_analyzer.services.ai.service import AIService
 from job_market_analyzer.services.analysis.service import AnalysisService
 from job_market_analyzer.services.match.service import MatchService
+from job_market_analyzer.services.recommendation.service import RecommendationService
 
 gemini_client = genai.Client(api_key=settings.gemini_api_key)
 
@@ -17,4 +18,12 @@ match_service = MatchService()
 analysis_service = AnalysisService(
     ai_service=ai_service,
     match_service=match_service,
+)
+
+recommendation_service = RecommendationService()
+
+analysis_service = AnalysisService(
+    ai_service=ai_service,
+    match_service=match_service,
+    recommendation_service=recommendation_service,
 )

@@ -1,7 +1,12 @@
 import json
 
+from job_market_analyzer.domain.analysis import MatchResult
 from job_market_analyzer.domain.job import JobOffer
+from job_market_analyzer.services.ai.prompt_loader import load_prompt
 from job_market_analyzer.services.ai.provider import AIProvider
+
+model_name = "gemini-3.5-flash-lite"
+recommendation_prompt_filename = "recommendation.txt"
 
 
 class GeminiProvider(AIProvider):
@@ -16,7 +21,7 @@ class GeminiProvider(AIProvider):
         schema["properties"].pop("description", None)
 
         response = self.client.models.generate_content(
-            model="gemini-3.5-flash-lite",
+            model=model_name,
             contents=description,
             config={
                 "response_mime_type": "application/json",
@@ -30,3 +35,29 @@ class GeminiProvider(AIProvider):
         job_offer.description = description
 
         return job_offer
+
+    def generate_recommendation(
+        self,
+        role: str,
+        matchResult: MatchResult,
+        decision: str,
+    ) -> str:
+        if not decision.strip():
+            raise ValueError("decision cannot be empty.")
+
+        if not role.strip():
+            raise ValueError("role cannot be empty.")
+
+        prompt_template = load_prompt(recommendation_prompt_filename)
+
+        prompt = prompt_template.format(
+            role=role,
+            score=matchResult.score,
+            matched_skills=", ".join(matchResult.matched_skills),
+            missing_skills=", ".join(matchResult.missing_skills),
+            decision=decision,
+        )
+
+        response = self.client.models.generate_content(model=model_name, contents=prompt)
+
+        return response.text
