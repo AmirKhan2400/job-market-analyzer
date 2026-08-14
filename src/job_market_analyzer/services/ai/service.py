@@ -3,9 +3,16 @@ from job_market_analyzer.services.ai.provider import AIProvider
 
 
 class AIService:
-    def __init__(self, primary: AIProvider, fallback: AIProvider):
+    def __init__(
+        self,
+        primary: AIProvider,
+        fallback: AIProvider | None = None,
+    ):
         self.primary = primary
         self.fallback = fallback
 
-    def extract_job(self, description: str) -> JobOffer:
+    def extract_job(
+        self,
+        description: str,
+    ) -> JobOffer:
         return self.primary.extract_job(description)

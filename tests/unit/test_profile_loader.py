@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from job_market_analyzer.services import profile_loader
+from job_market_analyzer.services.profile.service import ProfileService
 
 
 def test_profile_loader_return_user_profile(tmp_path: Path):
@@ -26,7 +26,8 @@ remote_preference: remote
         encoding="utf-8",
     )
 
-    profile = profile_loader.load_profile(profile_file)
+    profileService = ProfileService()
+    profile = profileService.load_profile(profile_file)
 
     assert profile.name == "Amir"
     assert profile.target_roles == ["AI Engineer"]
@@ -54,11 +55,13 @@ remote_preference: remote
     )
 
     with pytest.raises(ValidationError):
-        profile_loader.load_profile(profile_file)
+        profileService = ProfileService()
+        profileService.load_profile(profile_file)
 
 
 def test_profile_loader_invalid_path(tmp_path: Path):
     yaml_path = tmp_path / "not_exists.yaml"
 
     with pytest.raises(FileNotFoundError):
-        profile_loader.load_profile(yaml_path)
+        profileService = ProfileService()
+        profileService.load_profile(yaml_path)

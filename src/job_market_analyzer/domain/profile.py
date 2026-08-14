@@ -3,8 +3,8 @@ from pydantic import BaseModel
 
 class UserProfile(BaseModel):
     name: str
-    target_roles: list[str]
     skills: list[str]
-    experience_years: float
-    preferred_locations: list[str]
-    remote_preference: str
+    target_roles: list[str] | None = None
+    experience_years: float | None = None
+    preferred_locations: list[str] | None = None
+    remote_preference: str | None = None
