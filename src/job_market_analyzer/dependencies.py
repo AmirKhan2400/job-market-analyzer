@@ -3,9 +3,18 @@ from google import genai
 from job_market_analyzer.config import settings
 from job_market_analyzer.services.ai.gemini import GeminiProvider
 from job_market_analyzer.services.ai.service import AIService
+from job_market_analyzer.services.analysis.service import AnalysisService
+from job_market_analyzer.services.match.service import MatchService
 
 gemini_client = genai.Client(api_key=settings.gemini_api_key)
 
 gemini_provider = GeminiProvider(client=gemini_client)
 
 ai_service = AIService(primary=gemini_provider, fallback=None)
+
+match_service = MatchService()
+
+analysis_service = AnalysisService(
+    ai_service=ai_service,
+    match_service=match_service,
+)

@@ -16,7 +16,7 @@ class GeminiProvider(AIProvider):
         schema["properties"].pop("description", None)
 
         response = self.client.models.generate_content(
-            model="gemini-3.5-flash",
+            model="gemini-3.5-flash-lite",
             contents=description,
             config={
                 "response_mime_type": "application/json",
