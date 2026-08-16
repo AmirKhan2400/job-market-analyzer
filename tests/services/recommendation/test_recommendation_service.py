@@ -80,5 +80,5 @@ def test_extract_job_raises_when_both_providers_fail():
         fallback=fake_fallback,
     )
 
-    with pytest.raises(Exception,match="Groq failed"):
+    with pytest.raises(Exception, match="Groq failed"):
         service.extract_job("AI Engineer")

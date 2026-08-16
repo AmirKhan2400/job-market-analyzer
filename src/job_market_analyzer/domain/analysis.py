@@ -10,9 +10,7 @@ class MatchResult(BaseModel):
 
 
 class JobAnalysis(BaseModel):
-    user_profile_id: str
     job_offer: JobOffer
     match_result: MatchResult
-    summary: str
-    recommendation: str
+    decision: str
     reason_to_apply: str

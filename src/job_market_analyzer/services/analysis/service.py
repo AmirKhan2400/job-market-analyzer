@@ -1,6 +1,6 @@
-from job_market_analyzer.domain.analysis import MatchResult
-from job_market_analyzer.domain.job import JobOffer
+from job_market_analyzer.domain.analysis import JobAnalysis
 from job_market_analyzer.domain.profile import UserProfile
+from job_market_analyzer.repositories.analysis_repository import AnalysisRepository
 from job_market_analyzer.services.ai.service import AIService
 from job_market_analyzer.services.match.service import MatchService
 from job_market_analyzer.services.recommendation.service import RecommendationService
@@ -12,16 +12,18 @@ class AnalysisService:
         ai_service: AIService,
         match_service: MatchService,
         recommendation_service: RecommendationService,
+        repository: AnalysisRepository,
     ):
         self.ai_service = ai_service
         self.match_service = match_service
         self.recommendation_service = recommendation_service
+        self.repository = repository
 
     def analyze(
         self,
         profile: UserProfile,
         description: str,
-    ) -> tuple[JobOffer, MatchResult]:
+    ) -> JobAnalysis:
 
         job = self.ai_service.extract_job(description)
 
@@ -36,4 +38,13 @@ class AnalysisService:
             role=job.role, matchResult=match, decision=decision
         )
 
-        return job, match, decision, reason
+        jobAnalysis = JobAnalysis(
+            job_offer=job, match_result=match, decision=decision, reason_to_apply=reason
+        )
+
+        self.repository.save(jobAnalysis)
+
+        return jobAnalysis
+
+    def get_analysis_history(self) -> list[JobAnalysis]:
+        return self.repository.get_all()

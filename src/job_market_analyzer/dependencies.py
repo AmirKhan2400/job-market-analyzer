@@ -1,6 +1,8 @@
 from google import genai
 
 from job_market_analyzer.config import settings
+from job_market_analyzer.database.session import SessionLocal
+from job_market_analyzer.repositories.analysis_repository import AnalysisRepository
 from job_market_analyzer.services.ai.gemini import GeminiProvider
 from job_market_analyzer.services.ai.service import AIService
 from job_market_analyzer.services.analysis.service import AnalysisService
@@ -15,15 +17,15 @@ ai_service = AIService(primary=gemini_provider, fallback=None)
 
 match_service = MatchService()
 
-analysis_service = AnalysisService(
-    ai_service=ai_service,
-    match_service=match_service,
-)
-
 recommendation_service = RecommendationService()
+
+session = SessionLocal()
+
+repo = AnalysisRepository(session)
 
 analysis_service = AnalysisService(
     ai_service=ai_service,
     match_service=match_service,
     recommendation_service=recommendation_service,
+    repository=repo,
 )

@@ -34,15 +34,12 @@ def test_job_analysis_can_be_created():
     )
 
     analysis = JobAnalysis(
-        user_profile_id="user-123",
         job_offer=job,
         match_result=match,
-        summary="An AI engineering role focused on production AI systems.",
-        recommendation="Apply",
+        decision="Apply",
         reason_to_apply="The role matches your Python and AI engineering interests.",
     )
 
-    assert analysis.user_profile_id == "user-123"
     assert analysis.job_offer.company == "Dexter Health"
     assert analysis.match_result.score == 82
-    assert analysis.recommendation == "Apply"
+    assert analysis.decision == "Apply"
