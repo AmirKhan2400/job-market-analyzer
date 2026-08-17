@@ -9,5 +9,5 @@ class JobOffer(BaseModel):
     experience_level: str | None = None
     visa_sponsorship: bool | None = None
     employment_type: str | None = None
-    required_skills: list[str] | None = None
+    required_skills: list[str]
     description: str | None = None

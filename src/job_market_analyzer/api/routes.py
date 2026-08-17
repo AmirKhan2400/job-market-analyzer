@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Depends
+from fastapi import APIRouter, Depends
 
 from job_market_analyzer.api.schemas import AnalyzeJobRequest
 from job_market_analyzer.dependencies import get_analysis_service
@@ -14,7 +14,9 @@ def health_check() -> dict[str, str]:
 
 
 @router.post("/analyze")
-def analyze_job(request: AnalyzeJobRequest,service: AnalysisService = Depends(get_analysis_service)):
+def analyze_job(
+    request: AnalyzeJobRequest, service: AnalysisService = Depends(get_analysis_service)
+):
     return service.analyze(request.userProfile, request.description)
 
 

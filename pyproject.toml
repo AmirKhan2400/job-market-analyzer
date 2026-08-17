@@ -10,6 +10,7 @@ requires-python = ">=3.13,<3.14"
 dependencies = [
     "fastapi>=0.141.1",
     "google-genai>=2.18.0",
+    "openai>=3.1.0",
     "psycopg[binary]>=3.3.4",
     "pydantic>=2.13.4",
     "pydantic-settings>=2.15.0",
@@ -45,6 +46,8 @@ select = [
     "UP",
     "B",
 ]
+
+ignore = ["B008"]
 
 [tool.ruff.format]
 quote-style = "double"

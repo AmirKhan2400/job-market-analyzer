@@ -1,19 +1,17 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 
 from alembic import context
-
-from job_market_analyzer.database.session import Base
 from job_market_analyzer.config import settings
+from job_market_analyzer.database.session import Base
 from job_market_analyzer.database.models import AnalysisModel
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
-print("Base.metadata.tables.keys: ",Base.metadata.tables.keys())
+print("Base.metadata.tables.keys: ", Base.metadata.tables.keys())
 
 
 config.set_main_option(
@@ -21,7 +19,7 @@ config.set_main_option(
     str(settings.database_url),
 )
 
-print("settings.database_url: ",settings.database_url)
+print("settings.database_url: ", settings.database_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -78,9 +76,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

@@ -10,9 +10,7 @@ def test_get_analyses_returns_analysis_history():
     fake_service = Mock()
     fake_service.get_analysis_history.return_value = []
 
-    app.dependency_overrides[get_analysis_service] = (
-        lambda: fake_service
-    )
+    app.dependency_overrides[get_analysis_service] = lambda: fake_service
     try:
         client = TestClient(app)
 

@@ -1,36 +1,56 @@
 import json
 
+from openai import OpenAI
+
 from job_market_analyzer.domain.analysis import MatchResult
 from job_market_analyzer.domain.job import JobOffer
 from job_market_analyzer.services.ai.prompt_loader import load_prompt
 from job_market_analyzer.services.ai.provider import AIProvider
 
-model_name = "gemini-3.5-flash-lite"
+model_name = "deepseek/deepseek-v4-flash-0731"
 recommendation_prompt_filename = "recommendation.txt"
 
 
-class GeminiProvider(AIProvider):
-    def __init__(self, client):
+class OpenRouterProvider(AIProvider):
+    def __init__(self, client: OpenAI):
         self.client = client
 
     def extract_job(self, description: str) -> JobOffer:
-        print("Gemini:extract_job")
+        print("OpenRouter:extract_job")
         if not description.strip():
             raise ValueError("Job description cannot be empty.")
 
         schema = JobOffer.model_json_schema()
         schema["properties"].pop("description", None)
 
-        response = self.client.models.generate_content(
+        if "required" in schema:
+            schema["required"] = [field for field in schema["required"] if field != "description"]
+
+        response = self.client.chat.completions.create(
             model=model_name,
-            contents=description,
-            config={
-                "response_mime_type": "application/json",
-                "response_schema": schema,
+            messages=[
+                {
+                    "role": "user",
+                    "content": (
+                        "Extract the job information from the following "
+                        "job description."
+                        f"\n\n{description}"
+                    ),
+                }
+            ],
+            response_format={
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "job_offer",
+                    "strict": True,
+                    "schema": schema,
+                },
             },
         )
 
-        data = json.loads(response.text)
+        content = response.choices[0].message.content
+        print("content: ",content)
+        data = json.loads(content)
 
         job_offer = JobOffer.model_validate(data)
         job_offer.description = description
@@ -43,7 +63,7 @@ class GeminiProvider(AIProvider):
         matchResult: MatchResult,
         decision: str,
     ) -> str:
-        print("Gemini:generate_recommendation")
+        print("OpenRouter:generate_recommendation")
         if not decision.strip():
             raise ValueError("decision cannot be empty.")
 
@@ -60,6 +80,14 @@ class GeminiProvider(AIProvider):
             decision=decision,
         )
 
-        response = self.client.models.generate_content(model=model_name, contents=prompt)
+        response = self.client.chat.completions.create(
+            model=model_name,
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+        )
 
-        return response.text
+        return response.choices[0].message.content
