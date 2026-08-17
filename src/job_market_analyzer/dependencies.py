@@ -17,7 +17,9 @@ gemini_client = genai.Client(api_key=settings.gemini_api_key)
 
 gemini_provider = GeminiProvider(client=gemini_client)
 
-ai_service = AIService(primary=gemini_provider, fallback=None)
+groq_provider = GroqProvider(...)
+
+ai_service = AIService(primary=gemini_provider, fallback=groq_provider)
 
 match_service = MatchService()
 
