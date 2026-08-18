@@ -15,7 +15,7 @@ class AnalysisModel(Base):
         autoincrement=True,
     )
 
-    company: Mapped[str | None] = mapped_column(String,nullable=True)
+    company: Mapped[str | None] = mapped_column(String, nullable=True)
 
     role: Mapped[str] = mapped_column(String)
 

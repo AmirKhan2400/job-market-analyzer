@@ -5,7 +5,6 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 from job_market_analyzer.config import settings
 from job_market_analyzer.database.session import Base
-from job_market_analyzer.database.models import AnalysisModel
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

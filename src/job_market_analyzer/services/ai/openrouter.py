@@ -49,7 +49,7 @@ class OpenRouterProvider(AIProvider):
         )
 
         content = response.choices[0].message.content
-        print("content: ",content)
+        print("content: ", content)
         data = json.loads(content)
 
         job_offer = JobOffer.model_validate(data)
