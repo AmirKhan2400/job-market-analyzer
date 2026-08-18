@@ -213,7 +213,7 @@ job-market-analyzer/
 
 * Python 3.13
 * uv
-* Docker Desktop
+* Docker
 * Docker Compose
 
 The project requires Python 3.13:
@@ -248,8 +248,6 @@ GEMINI_API_KEY=your_gemini_api_key
 
 OPENROUTER_API_KEY=your_openrouter_api_key
 ```
-
-> Never commit `.env` or any file containing real API keys or passwords.
 
 ### 3. Install Dependencies
 
@@ -457,14 +455,7 @@ The application uses Pydantic Settings for configuration.
 | `GEMINI_API_KEY`     | Google Gemini API key              |
 | `OPENROUTER_API_KEY` | OpenRouter API key                 |
 
-Secrets are intentionally kept outside the source code.
-
 The repository contains `.env.example` as a safe configuration template.
-
-The actual `.env` file is:
-
-* excluded from Git using `.gitignore`
-* excluded from the Docker build context using `.dockerignore`
 
 ## Engineering Concepts Demonstrated
 
