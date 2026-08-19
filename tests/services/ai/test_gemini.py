@@ -10,7 +10,8 @@ def test_extract_job_success():
     fake_response.text = """
     {
         "company": "Dexter Health",
-        "role": "AI Engineer"
+        "role": "AI Engineer",
+        "required_skills": ["Python", "FastAPI"]
     }
     """
 

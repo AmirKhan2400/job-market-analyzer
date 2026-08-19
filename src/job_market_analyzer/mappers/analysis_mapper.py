@@ -6,6 +6,7 @@ from job_market_analyzer.domain.job import JobOffer
 class AnalysisMapper:
     @staticmethod
     def to_model(job_analysis: JobAnalysis) -> AnalysisModel:
+
         return AnalysisModel(
             company=job_analysis.job_offer.company,
             role=job_analysis.job_offer.role,
@@ -14,6 +15,7 @@ class AnalysisMapper:
             reason_to_apply=job_analysis.reason_to_apply,
             matched_skills=",".join(job_analysis.match_result.matched_skills),
             missing_skills=",".join(job_analysis.match_result.missing_skills),
+            required_skills=",".join(job_analysis.job_offer.required_skills),
         )
 
     @staticmethod
@@ -22,6 +24,7 @@ class AnalysisMapper:
             job_offer=JobOffer(
                 company=model.company,
                 role=model.role,
+                required_skills=model.required_skills.split(","),
             ),
             match_result=MatchResult(
                 score=model.score,

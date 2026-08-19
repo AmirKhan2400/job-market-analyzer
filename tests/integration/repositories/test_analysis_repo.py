@@ -10,11 +10,15 @@ def test_analysis_data_save_successfully():
     repo = AnalysisRepository(session)
 
     analysis = JobAnalysis(
-        job_offer=JobOffer(company="NeuroScale AI", role="AI Engineer"),
+        job_offer=JobOffer(
+            company="NeuroScale AI",
+            role="AI Engineer",
+            required_skills=["Docker", "Python", "FastAPI"],
+        ),
         decision="Apply",
         reason_to_apply="Strong fit",
         match_result=MatchResult(
-            score=75, matched_skills=["Python,FastAPI"], missing_skills=["Docker"]
+            score=75, matched_skills=["Python", "FastAPI"], missing_skills=["Docker"]
         ),
     )
 

@@ -29,6 +29,8 @@ class AnalysisModel(Base):
 
     missing_skills: Mapped[str] = mapped_column(String)
 
+    required_skills: Mapped[str] = mapped_column(String)
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),
