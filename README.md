@@ -340,8 +340,6 @@ To intentionally remove the database volume:
 docker compose down -v
 ```
 
-> Be careful with `-v`: it removes the PostgreSQL volume and its stored data.
-
 ### Automatic Database Migrations
 
 The application automatically runs:
@@ -428,22 +426,6 @@ Tests cover:
 * Skill matching
 * Recommendation generation
 
-## Code Quality
-
-The project uses Ruff for linting and formatting.
-
-Run the linter:
-
-```bash
-uv run ruff check .
-```
-
-Format the code:
-
-```bash
-uv run ruff format .
-```
-
 ## Environment Variables
 
 The application uses Pydantic Settings for configuration.
@@ -456,62 +438,6 @@ The application uses Pydantic Settings for configuration.
 | `OPENROUTER_API_KEY` | OpenRouter API key                 |
 
 The repository contains `.env.example` as a safe configuration template.
-
-## Engineering Concepts Demonstrated
-
-This project was intentionally built to demonstrate production-oriented engineering concepts beyond simply calling an LLM API.
-
-### Backend Engineering
-
-* REST API development with FastAPI
-* Request/response validation with Pydantic
-* Service-layer business logic
-* Repository-based persistence
-* Configuration management with Pydantic Settings
-* Dependency management with uv
-
-### Software Architecture
-
-* Separation of concerns
-* Domain models
-* Service abstractions
-* Provider abstraction
-* Dependency injection
-* Dependency inversion
-* Maintainable project structure
-
-### AI Engineering
-
-* LLM provider abstraction
-* Multiple LLM providers
-* Prompt management
-* Structured LLM processing
-* AI-powered recommendation generation
-* Provider substitution and fallback design
-
-### Database Engineering
-
-* PostgreSQL
-* SQLAlchemy ORM
-* Repository pattern
-* Alembic migrations
-* Persistent Docker volumes
-
-### Testing
-
-* Unit testing
-* Integration testing
-* API testing
-* Mocking external AI providers
-
-### Deployment
-
-* Docker
-* Docker Compose
-* Container networking
-* Environment-based configuration
-* Automatic database migrations
-* Persistent database storage
 
 ## Architecture Diagrams
 
