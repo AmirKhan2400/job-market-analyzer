@@ -31,8 +31,10 @@ export interface MatchResult {
 }
 
 export interface JobAnalysis {
+  id?: number | string
   job_offer: JobOffer
   match_result: MatchResult
   decision: string
   reason_to_apply: string
+  created_at?: string | null
 }
