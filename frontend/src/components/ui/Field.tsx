@@ -10,7 +10,10 @@ interface FieldProps {
 export function Field({ label, hint, htmlFor, children }: FieldProps) {
   return (
     <div>
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-slate-700">
+      <label
+        htmlFor={htmlFor}
+        className="block text-sm font-medium text-slate-700"
+      >
         {label}
       </label>
       <div className="mt-1">{children}</div>

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { JobAnalysis } from '../../../types/analysis'
 import { Card } from '../../ui/Card'
 
@@ -33,16 +34,29 @@ function skillSummary(skills: string[]): string {
     return 'No skills listed'
   }
 
-  return skills.slice(0, 5).join(', ')
+  const visibleSkills = skills.slice(0, 5).join(', ')
+  const hiddenCount = skills.length - 5
+
+  return hiddenCount > 0
+    ? `${visibleSkills}, +${hiddenCount} more`
+    : visibleSkills
 }
 
 export function AnalysisList({ analyses }: AnalysisListProps) {
   if (analyses.length === 0) {
     return (
       <Card>
-        <p className="text-sm text-slate-600">
-          No analyses yet. Run your first job analysis from the Analyze page.
-        </p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-slate-600">
+            No analyses yet. Run your first job analysis to build history.
+          </p>
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
+          >
+            Analyze a job
+          </Link>
+        </div>
       </Card>
     )
   }

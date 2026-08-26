@@ -23,7 +23,7 @@ export function JobDescriptionForm({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         disabled={disabled}
-        placeholder="Paste the job posting here…"
+        placeholder="Paste the job posting here..."
       />
     </Field>
   )

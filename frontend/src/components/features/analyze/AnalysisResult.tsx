@@ -1,3 +1,5 @@
+import type { JobAnalysis } from '../../../types/analysis'
+
 interface SkillListProps {
   skills: string[]
   emptyLabel: string
@@ -30,7 +32,7 @@ function SkillList({ skills, emptyLabel, variant }: SkillListProps) {
 
 function formatNullable(value: string | boolean | null): string {
   if (value === null || value === '') {
-    return '—'
+    return '-'
   }
   if (typeof value === 'boolean') {
     return value ? 'Yes' : 'No'
@@ -53,8 +55,6 @@ function DetailItem({ label, value }: DetailItemProps) {
     </div>
   )
 }
-
-import type { JobAnalysis } from '../../../types/analysis'
 
 interface AnalysisResultProps {
   analysis: JobAnalysis

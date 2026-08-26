@@ -46,7 +46,7 @@ export function AnalyzePage() {
       <div>
         <h1 className="text-2xl font-semibold text-slate-900">Analyze a Job</h1>
         <p className="mt-2 text-slate-600">
-          Enter your profile once — it is saved in this browser — then paste a
+          Enter your profile once - it is saved in this browser - then paste a
           job description to compare skills and get a recommendation.
         </p>
       </div>
@@ -85,7 +85,7 @@ export function AnalyzePage() {
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Analyzing…' : 'Analyze'}
+            {isLoading ? 'Analyzing...' : 'Analyze'}
           </Button>
           {isLoading ? <Spinner /> : null}
         </div>

@@ -11,12 +11,12 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 export function Header() {
   return (
     <header className="border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
+      <div className="mx-auto flex max-w-5xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <NavLink to="/" className="text-lg font-semibold text-slate-900">
           Job Market Analyzer
         </NavLink>
 
-        <nav className="flex items-center gap-1">
+        <nav className="flex flex-wrap items-center gap-1">
           <NavLink to="/" end className={navLinkClass}>
             Analyze
           </NavLink>
