@@ -113,3 +113,37 @@ def test_analyze_passes_visitor_id_to_service():
         assert fake_service.analyze.call_args.kwargs["visitor_id"] == visitor_id
     finally:
         app.dependency_overrides.clear()
+
+
+def test_analyze_then_history_reuses_server_issued_visitor_cookie():
+    fake_service = Mock()
+    fake_service.analyze.return_value = _analysis()
+    fake_service.get_analysis_history.return_value = [_analysis()]
+
+    app.dependency_overrides[get_analysis_service] = lambda: fake_service
+    try:
+        client = TestClient(app)
+
+        analyze_response = client.post(
+            "/analyze",
+            json={
+                "description": "AI Engineer job",
+                "userProfile": {
+                    "name": "Jason",
+                    "skills": ["Python"],
+                },
+            },
+        )
+        history_response = client.get("/analyses")
+
+        assert analyze_response.status_code == 200
+        assert history_response.status_code == 200
+
+        visitor_id = analyze_response.cookies.get("visitor_id")
+        assert visitor_id is not None
+        UUID(visitor_id)
+
+        assert fake_service.analyze.call_args.kwargs["visitor_id"] == visitor_id
+        fake_service.get_analysis_history.assert_called_once_with(visitor_id=visitor_id)
+    finally:
+        app.dependency_overrides.clear()

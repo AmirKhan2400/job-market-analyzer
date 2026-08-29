@@ -1,16 +1,86 @@
 Extract structured job information from the job description below.
 
-For required_skills, inspect the entire job description, including requirements,
-responsibilities, qualifications, and nice-to-have sections.
+Inspect the entire job description, including responsibilities, requirements,
+qualifications, preferred qualifications, nice-to-have sections, plus/bonus
+sections, and stack descriptions.
+
+Classify skills into required_skills and preferred_skills based on wording and
+section context.
+
+required_skills:
+- Include skills, technologies, concepts, or experience that are explicitly
+  required, expected, central to day-to-day responsibilities, or part of the
+  core production stack when the role clearly expects hands-on use.
+- Do not omit an explicitly named required technology simply because it appears
+  inside a comma-separated or bullet-point list.
+
+preferred_skills:
+- Include skills introduced by wording such as nice to have, preferred, a plus,
+  bonus, advantage, if you have experience with, or similar optional language.
+- Include technologies listed in clearly optional or preferred sections.
+
+Skill granularity and consolidation:
+- Extract resume-level, professionally meaningful skills and capabilities.
+- Do not extract every individual task, implementation detail, framework
+  feature, or technique as a separate skill.
+- When several requirements describe knowledge or depth within the same broader
+  competency, consolidate them into one representative skill or capability.
+- Prefer established technologies and broader engineering competencies over
+  highly granular subskills.
+- Keep distinct standalone technologies separate when they represent genuinely
+  different competencies.
+- Do not merge technologies merely because they are related.
+- A detailed job description should not automatically result in dozens of
+  independent required skills. Prefer a concise set of meaningful competencies
+  that accurately represents what the employer expects a candidate to know.
+
+Examples of consolidation:
+- BM25 + vector search + hybrid retrieval + reranking + query rewriting +
+  chunking + embedding model selection
+  -> RAG / Retrieval Engineering
+
+- App Router + route handlers + server actions
+  -> Next.js
+
+- JSON Schema + structured outputs + function calling + runtime validation
+  -> Structured LLM Outputs & Tool Calling
+
+- Prompt caching + batching + model routing
+  -> LLM Cost & Latency Optimization
+
+These examples demonstrate the desired level of abstraction. Do not blindly
+apply these mappings when the job description treats one of the underlying
+technologies or techniques as a distinct explicit requirement.
+
+Alternatives and examples:
+- Be careful with wording such as e.g., such as, or comparable, and and/or.
+- Do not interpret every example as an independent mandatory requirement.
+- When examples illustrate a broader required capability, prefer the broader
+  capability where reasonable.
+- For example, "Experience with tracing tooling such as Braintrust, Langfuse,
+  Promptfoo or OpenTelemetry" can be represented as
+  "LLM Tracing and Evaluation Tooling" instead of requiring every named tool.
+- "Zod or comparable runtime validation" should not make Zod mandatory unless
+  the posting clearly requires Zod specifically.
+
+Normalization:
+- Prefer common, consistent names for well-known technologies and concepts.
+- Use the full canonical name for common abbreviations where appropriate.
+  Examples:
+  RAG -> Retrieval-Augmented Generation
+  LLM / LLMs -> Large Language Models
+  Postgres -> PostgreSQL
+  K8s -> Kubernetes
+- Do not treat related but different technologies as aliases.
+  For example, GitHub Actions is not the same skill as CI/CD, and PyTorch is
+  not the same skill as Machine Learning.
 
 Extract explicitly mentioned technologies, programming languages, frameworks,
 libraries, tools, platforms, technical concepts, and engineering practices that
 are relevant to the role.
 
-Do not omit an explicitly named technology simply because it appears inside a
-comma-separated or bullet-point list.
-
-Do not invent skills that are not supported by the job description.
+Do not invent skills or requirements that are not supported by the job
+description.
 
 Job description:
 

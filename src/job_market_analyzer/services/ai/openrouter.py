@@ -13,8 +13,9 @@ recommendation_prompt_filename = "recommendation.txt"
 
 
 class OpenRouterProvider(AIProvider):
-    def __init__(self, client: OpenAI):
+    def __init__(self, client: OpenAI, extraction_temperature: float = 0.0):
         self.client = client
+        self.extraction_temperature = extraction_temperature
 
     def extract_job(self, description: str) -> JobOffer:
         print("OpenRouter:extract_job")
@@ -46,6 +47,7 @@ class OpenRouterProvider(AIProvider):
                     "schema": schema,
                 },
             },
+            temperature=self.extraction_temperature,
         )
 
         content = response.choices[0].message.content
@@ -77,6 +79,8 @@ class OpenRouterProvider(AIProvider):
             score=matchResult.score,
             matched_skills=", ".join(matchResult.matched_skills),
             missing_skills=", ".join(matchResult.missing_skills),
+            matched_preferred_skills=", ".join(matchResult.matched_preferred_skills),
+            missing_preferred_skills=", ".join(matchResult.missing_preferred_skills),
             decision=decision,
         )
 

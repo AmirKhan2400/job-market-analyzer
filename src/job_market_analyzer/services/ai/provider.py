@@ -10,11 +10,10 @@ class AIProvider(ABC):
         pass
 
 
-@abstractmethod
-def generate_recommendation(
-    self,
-    role: str,
-    matchResult: MatchResult,
-    decision: str,
-) -> str:
-    pass
+    @abstractmethod
+    def generate_recommendation(
+        self,
+        role: str,
+        matchResult: MatchResult,
+        decision: str,) -> str:
+        pass

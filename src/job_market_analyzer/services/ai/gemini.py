@@ -11,8 +11,9 @@ recommendation_prompt_filename = "recommendation.txt"
 
 
 class GeminiProvider(AIProvider):
-    def __init__(self, client):
+    def __init__(self, client, extraction_temperature: float = 0.0):
         self.client = client
+        self.extraction_temperature = extraction_temperature
 
     def extract_job(self, description: str) -> JobOffer:
         print("Gemini:extract_job")
@@ -31,6 +32,7 @@ class GeminiProvider(AIProvider):
             config={
                 "response_mime_type": "application/json",
                 "response_schema": schema,
+                "temperature": self.extraction_temperature,
             },
         )
 
@@ -61,6 +63,8 @@ class GeminiProvider(AIProvider):
             score=matchResult.score,
             matched_skills=", ".join(matchResult.matched_skills),
             missing_skills=", ".join(matchResult.missing_skills),
+            matched_preferred_skills=", ".join(matchResult.matched_preferred_skills),
+            missing_preferred_skills=", ".join(matchResult.missing_preferred_skills),
             decision=decision,
         )
 

@@ -3,7 +3,7 @@ import type { JobAnalysis } from '../../../types/analysis'
 interface SkillListProps {
   skills: string[]
   emptyLabel: string
-  variant: 'matched' | 'missing'
+  variant: 'matched' | 'missing' | 'preferred'
 }
 
 function SkillList({ skills, emptyLabel, variant }: SkillListProps) {
@@ -14,6 +14,8 @@ function SkillList({ skills, emptyLabel, variant }: SkillListProps) {
   const color =
     variant === 'matched'
       ? 'bg-emerald-50 text-emerald-800 ring-emerald-200'
+      : variant === 'preferred'
+        ? 'bg-sky-50 text-sky-800 ring-sky-200'
       : 'bg-amber-50 text-amber-900 ring-amber-200'
 
   return (
@@ -62,6 +64,10 @@ interface AnalysisResultProps {
 
 export function AnalysisResult({ analysis }: AnalysisResultProps) {
   const { job_offer, match_result, decision, reason_to_apply } = analysis
+  const preferredSkills = [
+    ...match_result.matched_preferred_skills,
+    ...match_result.missing_preferred_skills,
+  ]
 
   return (
     <div className="space-y-6">
@@ -102,12 +108,26 @@ export function AnalysisResult({ analysis }: AnalysisResultProps) {
           </div>
         </div>
         <div>
-          <h3 className="text-sm font-medium text-slate-900">Missing skills</h3>
+          <h3 className="text-sm font-medium text-slate-900">
+            Missing required skills
+          </h3>
           <div className="mt-2">
             <SkillList
               skills={match_result.missing_skills}
-              emptyLabel="No missing skills."
+              emptyLabel="No missing required skills."
               variant="missing"
+            />
+          </div>
+        </div>
+        <div>
+          <h3 className="text-sm font-medium text-slate-900">
+            Preferred / nice-to-have skills
+          </h3>
+          <div className="mt-2">
+            <SkillList
+              skills={preferredSkills}
+              emptyLabel="No preferred skills listed."
+              variant="preferred"
             />
           </div>
         </div>

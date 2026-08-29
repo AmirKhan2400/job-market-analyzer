@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class JobOffer(BaseModel):
@@ -10,4 +10,5 @@ class JobOffer(BaseModel):
     visa_sponsorship: bool | None = None
     employment_type: str | None = None
     required_skills: list[str]
+    preferred_skills: list[str] = Field(default_factory=list)
     description: str | None = None

@@ -16,12 +16,15 @@ def test_analysis_service_analyze():
         company="NeuroScale AI",
         role="AI Engineer",
         required_skills=["Python", "FastAPI"],
+        preferred_skills=["LangGraph"],
     )
 
     fake_match.analyze.return_value = MatchResult(
         score=50,
         matched_skills=["Python"],
         missing_skills=["FastAPI"],
+        matched_preferred_skills=[],
+        missing_preferred_skills=["LangGraph"],
     )
 
     fake_recommendation.decide.return_value = "Apply"
@@ -57,12 +60,15 @@ def test_analyze():
         company="NeuroScale AI",
         role="AI Engineer",
         required_skills=["Python", "FastAPI"],
+        preferred_skills=["LangGraph"],
     )
 
     fake_match_result = MatchResult(
         score=50,
         matched_skills=["Python"],
         missing_skills=["FastAPI"],
+        matched_preferred_skills=[],
+        missing_preferred_skills=["LangGraph"],
     )
 
     fake_ai.extract_job.return_value = fake_job
@@ -98,6 +104,7 @@ def test_analyze():
     fake_match.analyze.assert_called_once_with(
         user_skills=["Python"],
         job_skills=["Python", "FastAPI"],
+        preferred_skills=["LangGraph"],
     )
 
     fake_recommendation.decide.assert_called_once_with(50)
@@ -127,12 +134,15 @@ def test_get_analysis_history():
             visa_sponsorship=True,
             employment_type="full-time",
             required_skills=["Python"],
+            preferred_skills=["Temporal"],
             description="Test",
         ),
         match_result=MatchResult(
             score=80,
             matched_skills=["Python"],
             missing_skills=["Docker"],
+            matched_preferred_skills=[],
+            missing_preferred_skills=["Temporal"],
         ),
         decision="Apply",
         reason_to_apply="Strong match",

@@ -16,6 +16,7 @@ def test_analysis_service_happy_path():
         company="NeuroScale AI",
         role="AI Engineer",
         required_skills=["Python", "FastAPI"],
+        preferred_skills=["LangGraph"],
     )
 
     fake_profile.name = "Jason"
@@ -25,6 +26,8 @@ def test_analysis_service_happy_path():
         score=50,
         matched_skills=["Python"],
         missing_skills=["FastAPI"],
+        matched_preferred_skills=[],
+        missing_preferred_skills=["LangGraph"],
     )
 
     fake_ai.extract_job.return_value = job
@@ -54,6 +57,11 @@ def test_analysis_service_happy_path():
     assert result.match_result == match
     assert result.decision == "Apply"
     assert result.reason_to_apply == "Strong fit"
+    fake_match_service.analyze.assert_called_once_with(
+        user_skills=["Python", "CI/CD"],
+        job_skills=["Python", "FastAPI"],
+        preferred_skills=["LangGraph"],
+    )
 
     assert saved_analysis.job_offer == job
     assert saved_analysis.match_result == match

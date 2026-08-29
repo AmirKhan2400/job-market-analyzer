@@ -21,6 +21,7 @@ export interface JobOffer {
   visa_sponsorship: boolean | null
   employment_type: string | null
   required_skills: string[]
+  preferred_skills: string[]
   description: string | null
 }
 
@@ -28,6 +29,8 @@ export interface MatchResult {
   score: number
   matched_skills: string[]
   missing_skills: string[]
+  matched_preferred_skills: string[]
+  missing_preferred_skills: string[]
 }
 
 export interface JobAnalysis {

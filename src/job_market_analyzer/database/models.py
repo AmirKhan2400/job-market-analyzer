@@ -33,6 +33,8 @@ class AnalysisModel(Base):
 
     required_skills: Mapped[str] = mapped_column(String)
 
+    preferred_skills: Mapped[str] = mapped_column(String, nullable=False, default="")
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),

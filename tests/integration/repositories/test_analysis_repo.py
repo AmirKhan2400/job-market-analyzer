@@ -10,6 +10,7 @@ def _analysis(company: str) -> JobAnalysis:
             company=company,
             role="AI Engineer",
             required_skills=["Docker", "Python", "FastAPI"],
+            preferred_skills=["LangGraph", "Temporal"],
         ),
         decision="Apply",
         reason_to_apply="Strong fit",
@@ -17,6 +18,8 @@ def _analysis(company: str) -> JobAnalysis:
             score=75,
             matched_skills=["Python", "FastAPI"],
             missing_skills=["Docker"],
+            matched_preferred_skills=[],
+            missing_preferred_skills=["LangGraph", "Temporal"],
         ),
     )
 
@@ -39,7 +42,10 @@ def test_analysis_data_save_successfully():
         saved = analysis_list[-1]
 
         assert saved.job_offer.company == analysis.job_offer.company
+        assert saved.id == analysis_id
+        assert saved.created_at is not None
         assert saved.match_result.score == analysis.match_result.score
+        assert saved.job_offer.preferred_skills == analysis.job_offer.preferred_skills
         assert saved.decision == analysis.decision
     finally:
         if analysis_id is not None:

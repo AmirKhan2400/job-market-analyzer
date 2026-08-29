@@ -7,11 +7,15 @@ def test_match_result_can_be_created():
         score=82,
         matched_skills=["Python", "FastAPI"],
         missing_skills=["AWS", "Kubernetes"],
+        matched_preferred_skills=["LangGraph"],
+        missing_preferred_skills=["Temporal"],
     )
 
     assert result.score == 82
     assert result.matched_skills == ["Python", "FastAPI"]
     assert result.missing_skills == ["AWS", "Kubernetes"]
+    assert result.matched_preferred_skills == ["LangGraph"]
+    assert result.missing_preferred_skills == ["Temporal"]
 
 
 def test_job_analysis_can_be_created():
@@ -24,6 +28,7 @@ def test_job_analysis_can_be_created():
         visa_sponsorship=None,
         employment_type="full-time",
         required_skills=["Python", "FastAPI"],
+        preferred_skills=["LangGraph"],
         description="We are looking for an AI Engineer.",
     )
 
@@ -31,15 +36,19 @@ def test_job_analysis_can_be_created():
         score=82,
         matched_skills=["Python"],
         missing_skills=["FastAPI"],
+        matched_preferred_skills=[],
+        missing_preferred_skills=["LangGraph"],
     )
 
     analysis = JobAnalysis(
+        id=1,
         job_offer=job,
         match_result=match,
         decision="Apply",
         reason_to_apply="The role matches your Python and AI engineering interests.",
     )
 
+    assert analysis.id == 1
     assert analysis.job_offer.company == "Dexter Health"
     assert analysis.match_result.score == 82
     assert analysis.decision == "Apply"

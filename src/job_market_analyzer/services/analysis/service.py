@@ -28,12 +28,10 @@ class AnalysisService:
 
         job = self.ai_service.extract_job(description)
 
-        print("user profile: ",profile.model_dump_json())
-        print("job: ",job.model_dump_json())
-
         match = self.match_service.analyze(
             user_skills=profile.skills,
             job_skills=job.required_skills,
+            preferred_skills=job.preferred_skills,
         )
 
         decision = self.recommendation_service.decide(match.score)

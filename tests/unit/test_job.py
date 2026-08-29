@@ -13,12 +13,14 @@ def test_job_offer_can_be_created():
         visa_sponsorship=True,
         employment_type="full-time",
         required_skills=["Python", "FastAPI", "Docker"],
+        preferred_skills=["LangGraph"],
         description="We are looking for an AI Engineer.",
     )
 
     assert job.company == company_name
     assert job.visa_sponsorship
     assert job.required_skills is not None
+    assert job.preferred_skills == ["LangGraph"]
 
 
 def test_job_offer_allows_unknown_optional_fields():
@@ -30,3 +32,4 @@ def test_job_offer_allows_unknown_optional_fields():
     assert job.company is None
     assert job.country is None
     assert job.visa_sponsorship is None
+    assert job.preferred_skills == []

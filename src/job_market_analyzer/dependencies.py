@@ -15,9 +15,14 @@ from job_market_analyzer.services.analysis.service import AnalysisService
 from job_market_analyzer.services.match.service import MatchService
 from job_market_analyzer.services.recommendation.service import RecommendationService
 
+EXTRACT_JOB_TEMPERATURE = 0.0
+
 gemini_client = genai.Client(api_key=settings.gemini_api_key)
 
-gemini_provider = GeminiProvider(client=gemini_client)
+gemini_provider = GeminiProvider(
+    client=gemini_client,
+    extraction_temperature=EXTRACT_JOB_TEMPERATURE,
+)
 
 openrouter_client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
@@ -26,6 +31,7 @@ openrouter_client = OpenAI(
 
 openrouter_provider = OpenRouterProvider(
     client=openrouter_client,
+    extraction_temperature=EXTRACT_JOB_TEMPERATURE,
 )
 
 ai_service = AIService(primary=gemini_provider, fallback=openrouter_provider)
