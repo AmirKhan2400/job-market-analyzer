@@ -42,11 +42,13 @@ def test_analysis_service_happy_path():
     result = service.analyze(
         profile=fake_profile,
         description="AI Engineer job",
+        visitor_id="11111111-1111-4111-8111-111111111111",
     )
 
     fake_repository.save.assert_called_once()
 
     saved_analysis = fake_repository.save.call_args.args[0]
+    saved_visitor_id = fake_repository.save.call_args.kwargs["visitor_id"]
 
     assert result.job_offer == job
     assert result.match_result == match
@@ -57,3 +59,4 @@ def test_analysis_service_happy_path():
     assert saved_analysis.match_result == match
     assert saved_analysis.decision == "Apply"
     assert saved_analysis.reason_to_apply == "Strong fit"
+    assert saved_visitor_id == "11111111-1111-4111-8111-111111111111"

@@ -42,6 +42,7 @@ def test_analysis_service_analyze():
     service.analyze(
         profile=profile,
         description="AI Engineer job",
+        visitor_id="11111111-1111-4111-8111-111111111111",
     )
 
     fake_ai.extract_job.assert_called_once_with("AI Engineer job")
@@ -84,6 +85,7 @@ def test_analyze():
     result = service.analyze(
         profile=profile,
         description="AI Engineer",
+        visitor_id="11111111-1111-4111-8111-111111111111",
     )
 
     assert result.job_offer == fake_job
@@ -104,6 +106,11 @@ def test_analyze():
         role="AI Engineer",
         matchResult=fake_match_result,
         decision="Maybe",
+    )
+
+    fake_repo.save.assert_called_once_with(
+        result,
+        visitor_id="11111111-1111-4111-8111-111111111111",
     )
 
 
@@ -131,7 +138,7 @@ def test_get_analysis_history():
         reason_to_apply="Strong match",
     )
 
-    fake_repository.get_all.return_value = [analysis]
+    fake_repository.get_all_by_visitor_id.return_value = [analysis]
 
     service = AnalysisService(
         ai_service=Mock(),
@@ -140,8 +147,10 @@ def test_get_analysis_history():
         repository=fake_repository,
     )
 
-    result = service.get_analysis_history()
+    result = service.get_analysis_history(visitor_id="11111111-1111-4111-8111-111111111111")
 
     assert result == [analysis]
 
-    fake_repository.get_all.assert_called_once_with()
+    fake_repository.get_all_by_visitor_id.assert_called_once_with(
+        "11111111-1111-4111-8111-111111111111"
+    )

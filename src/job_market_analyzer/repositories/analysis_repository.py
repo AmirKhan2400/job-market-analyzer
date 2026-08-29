@@ -12,9 +12,10 @@ class AnalysisRepository:
     def save(
         self,
         jobAnalysis: JobAnalysis,
+        visitor_id: str,
     ) -> int:
 
-        analysis = AnalysisMapper.to_model(jobAnalysis)
+        analysis = AnalysisMapper.to_model(jobAnalysis, visitor_id=visitor_id)
 
         self.session.add(analysis)
         self.session.commit()
@@ -24,6 +25,14 @@ class AnalysisRepository:
 
     def get_all(self) -> list[JobAnalysis]:
         models = self.session.query(AnalysisModel).all()
+        return AnalysisMapper.to_domain_list(models)
+
+    def get_all_by_visitor_id(self, visitor_id: str) -> list[JobAnalysis]:
+        models = (
+            self.session.query(AnalysisModel)
+            .filter(AnalysisModel.visitor_id == visitor_id)
+            .all()
+        )
         return AnalysisMapper.to_domain_list(models)
 
     def delete(self, analysis: AnalysisModel) -> None:

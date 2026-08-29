@@ -2,10 +2,10 @@ import type { UserProfile } from '../types/analysis'
 
 export const PROFILE_STORAGE_KEY = 'job-market-analyzer:user-profile'
 
-/** Form fields as strings so comma-separated lists restore exactly as typed. */
+/** Some fields stay as strings because the UI still captures comma-separated text. */
 export interface ProfileFormValues {
   name: string
-  skills: string
+  skills: string[]
   target_roles: string
   experience_years: string
   preferred_locations: string
@@ -14,7 +14,7 @@ export interface ProfileFormValues {
 
 export const EMPTY_PROFILE_FORM: ProfileFormValues = {
   name: '',
-  skills: '',
+  skills: [],
   target_roles: '',
   experience_years: '',
   preferred_locations: '',
@@ -37,7 +37,7 @@ export function profileFormToUserProfile(
   values: ProfileFormValues,
 ): { profile: UserProfile } | { error: string } {
   const name = values.name.trim()
-  const skills = parseCommaList(values.skills)
+  const skills = values.skills
 
   if (!name) {
     return { error: 'Name is required.' }

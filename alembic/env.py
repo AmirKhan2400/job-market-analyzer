@@ -11,15 +11,10 @@ from job_market_analyzer.database.session import Base
 # access to the values within the .ini file in use.
 config = context.config
 
-print("Base.metadata.tables.keys: ", Base.metadata.tables.keys())
-
-
 config.set_main_option(
     "sqlalchemy.url",
     str(settings.database_url),
 )
-
-print("settings.database_url: ", settings.database_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   EMPTY_PROFILE_FORM,
   PROFILE_STORAGE_KEY,
+  parseCommaList,
   type ProfileFormValues,
 } from '../lib/profileForm'
 
@@ -17,7 +18,16 @@ function readStoredProfile(): ProfileFormValues {
       return EMPTY_PROFILE_FORM
     }
 
-    return { ...EMPTY_PROFILE_FORM, ...parsed }
+    const restored = { ...EMPTY_PROFILE_FORM, ...parsed } as ProfileFormValues & {
+      skills: string[] | string
+    }
+
+    return {
+      ...restored,
+      skills: Array.isArray(restored.skills)
+        ? restored.skills
+        : parseCommaList(restored.skills),
+    }
   } catch {
     return EMPTY_PROFILE_FORM
   }

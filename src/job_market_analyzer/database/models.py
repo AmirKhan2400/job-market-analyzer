@@ -15,6 +15,8 @@ class AnalysisModel(Base):
         autoincrement=True,
     )
 
+    visitor_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
+
     company: Mapped[str | None] = mapped_column(String, nullable=True)
 
     role: Mapped[str] = mapped_column(String)

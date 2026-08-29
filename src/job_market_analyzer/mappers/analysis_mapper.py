@@ -5,9 +5,10 @@ from job_market_analyzer.domain.job import JobOffer
 
 class AnalysisMapper:
     @staticmethod
-    def to_model(job_analysis: JobAnalysis) -> AnalysisModel:
+    def to_model(job_analysis: JobAnalysis, visitor_id: str) -> AnalysisModel:
 
         return AnalysisModel(
+            visitor_id=visitor_id,
             company=job_analysis.job_offer.company,
             role=job_analysis.job_offer.role,
             score=job_analysis.match_result.score,
@@ -38,8 +39,12 @@ class AnalysisMapper:
     @staticmethod
     def to_model_list(
         analyses: list[JobAnalysis],
+        visitor_id: str,
     ) -> list[AnalysisModel]:
-        return [AnalysisMapper.to_model(analysis) for analysis in analyses]
+        return [
+            AnalysisMapper.to_model(analysis, visitor_id=visitor_id)
+            for analysis in analyses
+        ]
 
     @staticmethod
     def to_domain_list(

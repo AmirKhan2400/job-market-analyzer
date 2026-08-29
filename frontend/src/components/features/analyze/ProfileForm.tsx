@@ -1,4 +1,5 @@
 import { Field, inputClassName } from '../../ui/Field'
+import { SkillSelector } from '../../ui/SkillSelector'
 import type { ProfileFormValues } from '../../../lib/profileForm'
 
 interface ProfileFormProps {
@@ -31,15 +32,13 @@ export function ProfileForm({ values, onChange, disabled }: ProfileFormProps) {
       <Field
         htmlFor="profile-skills"
         label="Skills"
-        hint="Comma-separated. Example: Python, FastAPI, SQL"
+        hint="Search and select canonical skills."
       >
-        <input
+        <SkillSelector
           id="profile-skills"
-          className={inputClassName}
           value={values.skills}
-          onChange={(event) => update('skills', event.target.value)}
+          onChange={(skills) => update('skills', skills)}
           disabled={disabled}
-          placeholder="Python, FastAPI, PostgreSQL"
         />
       </Field>
 

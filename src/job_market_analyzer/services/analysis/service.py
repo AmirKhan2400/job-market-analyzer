@@ -23,9 +23,13 @@ class AnalysisService:
         self,
         profile: UserProfile,
         description: str,
+        visitor_id: str,
     ) -> JobAnalysis:
 
         job = self.ai_service.extract_job(description)
+
+        print("user profile: ",profile.model_dump_json())
+        print("job: ",job.model_dump_json())
 
         match = self.match_service.analyze(
             user_skills=profile.skills,
@@ -42,9 +46,9 @@ class AnalysisService:
             job_offer=job, match_result=match, decision=decision, reason_to_apply=reason
         )
 
-        self.repository.save(jobAnalysis)
+        self.repository.save(jobAnalysis, visitor_id=visitor_id)
 
         return jobAnalysis
 
-    def get_analysis_history(self) -> list[JobAnalysis]:
-        return self.repository.get_all()
+    def get_analysis_history(self, visitor_id: str) -> list[JobAnalysis]:
+        return self.repository.get_all_by_visitor_id(visitor_id)

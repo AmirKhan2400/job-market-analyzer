@@ -40,6 +40,7 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
   try {
     response = await fetch(url, {
       ...options,
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,

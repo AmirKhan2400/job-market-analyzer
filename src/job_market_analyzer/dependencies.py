@@ -34,10 +34,6 @@ match_service = MatchService()
 
 recommendation_service = RecommendationService()
 
-session = SessionLocal()
-
-repo = AnalysisRepository(session)
-
 
 def get_db() -> Generator[Session]:
     db = SessionLocal()
