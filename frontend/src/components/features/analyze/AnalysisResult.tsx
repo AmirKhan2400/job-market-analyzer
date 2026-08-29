@@ -111,16 +111,6 @@ export function AnalysisResult({ analysis }: AnalysisResultProps) {
             />
           </div>
         </div>
-        <div>
-          <h3 className="text-sm font-medium text-slate-900">Required skills</h3>
-          <div className="mt-2">
-            <SkillList
-              skills={job_offer.required_skills}
-              emptyLabel="None listed."
-              variant="missing"
-            />
-          </div>
-        </div>
       </div>
     </div>
   )

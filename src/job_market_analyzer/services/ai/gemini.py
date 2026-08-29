@@ -6,6 +6,7 @@ from job_market_analyzer.services.ai.prompt_loader import load_prompt
 from job_market_analyzer.services.ai.provider import AIProvider
 
 model_name = "gemini-3.5-flash-lite"
+extraction_prompt_filename = "extraction.txt"
 recommendation_prompt_filename = "recommendation.txt"
 
 
@@ -21,9 +22,12 @@ class GeminiProvider(AIProvider):
         schema = JobOffer.model_json_schema()
         schema["properties"].pop("description", None)
 
+        prompt_template = load_prompt(extraction_prompt_filename)
+        prompt = prompt_template.format(description=description)
+
         response = self.client.models.generate_content(
             model=model_name,
-            contents=description,
+            contents=prompt,
             config={
                 "response_mime_type": "application/json",
                 "response_schema": schema,

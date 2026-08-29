@@ -26,6 +26,10 @@ def test_extract_job_success():
 
     assert result.company == "Dexter Health"
     assert result.role == "AI Engineer"
+    prompt = fake_client.models.generate_content.call_args.kwargs["contents"]
+    assert "Extract explicitly mentioned technologies" in prompt
+    assert "Do not omit an explicitly named technology" in prompt
+    assert "Do not invent skills" in prompt
 
 
 def test_generate_recommendation_builds_prompt_and_calls_client():

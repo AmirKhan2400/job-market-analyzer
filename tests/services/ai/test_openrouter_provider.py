@@ -54,6 +54,10 @@ def test_extract_job_success():
     ]
 
     client.chat.completions.create.assert_called_once()
+    prompt = client.chat.completions.create.call_args.kwargs["messages"][0]["content"]
+    assert "Extract explicitly mentioned technologies" in prompt
+    assert "Do not omit an explicitly named technology" in prompt
+    assert "Do not invent skills" in prompt
 
 
 def test_extract_job_empty_description():

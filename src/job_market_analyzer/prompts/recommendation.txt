@@ -14,26 +14,17 @@ Missing Skills:
 Decision:
 {decision}
 
-Write a concise recommendation for the user based only on the provided information.
+Write a concise career recommendation for the user based only on the provided information.
 
-Use exactly this structure:
-
-{decision}
-
-[1-2 sentences explaining why the user should or should not apply based on the match score and skills.]
-
-Strengths:
-[Briefly explain the user's relevant matched skills and why they are useful for this role.]
-
-Missing Skills:
-[Briefly explain the most important missing skills. Group related skills where appropriate instead of simply repeating the entire list.]
-
-Next Steps:
-[Give one practical recommendation for improving their fit for similar roles.]
+Start by clearly stating whether the user should apply, using the provided decision. Then naturally explain why based on the match score, highlight the most relevant matched skills, mention the most important skill gaps, and finish with one practical next step for improving their fit for similar roles.
 
 Rules:
+- Write the recommendation as one coherent paragraph.
 - Keep the entire recommendation under 120 words.
-- Do not use Markdown formatting such as **, *, #, or bullet points.
-- Put each section on a separate paragraph.
-- Use the section names exactly as specified.
-- Do not invent skills or experience that were
+- Do not use headings or section titles such as "Strengths", "Missing Skills", or "Next Steps".
+- Do not use Markdown formatting, bullet points, or lists.
+- Do not simply repeat every matched or missing skill; prioritize the most relevant ones.
+- Group related missing skills naturally when appropriate.
+- Keep the tone professional, concise, and useful.
+- Base the recommendation only on the provided information.
+- Do not invent skills, experience, qualifications, or achievements.

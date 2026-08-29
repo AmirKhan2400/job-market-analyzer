@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnalysisResult } from '../components/features/analyze/AnalysisResult'
 import { JobDescriptionForm } from '../components/features/analyze/JobDescriptionForm'
 import { ProfileForm } from '../components/features/analyze/ProfileForm'
@@ -17,6 +17,22 @@ export function AnalyzePage() {
   const { isLoading, error, result, submit } = useAnalyze()
   const [description, setDescription] = useState('')
   const [formError, setFormError] = useState<string | null>(null)
+  const resultRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!result) {
+      return
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
+
+    resultRef.current?.scrollIntoView({
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      block: 'start',
+    })
+  }, [result])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -94,10 +110,14 @@ export function AnalyzePage() {
       {visibleError ? <ErrorMessage message={visibleError} /> : null}
 
       {result ? (
-        <Card>
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">Result</h2>
-          <AnalysisResult analysis={result} />
-        </Card>
+        <div ref={resultRef}>
+          <Card>
+            <h2 className="mb-4 text-lg font-semibold text-slate-900">
+              Result
+            </h2>
+            <AnalysisResult analysis={result} />
+          </Card>
+        </div>
       ) : null}
     </section>
   )

@@ -1,0 +1,17 @@
+Extract structured job information from the job description below.
+
+For required_skills, inspect the entire job description, including requirements,
+responsibilities, qualifications, and nice-to-have sections.
+
+Extract explicitly mentioned technologies, programming languages, frameworks,
+libraries, tools, platforms, technical concepts, and engineering practices that
+are relevant to the role.
+
+Do not omit an explicitly named technology simply because it appears inside a
+comma-separated or bullet-point list.
+
+Do not invent skills that are not supported by the job description.
+
+Job description:
+
+{description}

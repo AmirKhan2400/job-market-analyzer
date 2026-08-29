@@ -8,6 +8,7 @@ from job_market_analyzer.services.ai.prompt_loader import load_prompt
 from job_market_analyzer.services.ai.provider import AIProvider
 
 model_name = "deepseek/deepseek-v4-flash-0731"
+extraction_prompt_filename = "extraction.txt"
 recommendation_prompt_filename = "recommendation.txt"
 
 
@@ -26,16 +27,15 @@ class OpenRouterProvider(AIProvider):
         if "required" in schema:
             schema["required"] = [field for field in schema["required"] if field != "description"]
 
+        prompt_template = load_prompt(extraction_prompt_filename)
+        prompt = prompt_template.format(description=description)
+
         response = self.client.chat.completions.create(
             model=model_name,
             messages=[
                 {
                     "role": "user",
-                    "content": (
-                        "Extract the job information from the following "
-                        "job description."
-                        f"\n\n{description}"
-                    ),
+                    "content": prompt,
                 }
             ],
             response_format={
