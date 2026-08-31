@@ -48,7 +48,7 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
     })
   } catch {
     throw new ApiError(
-      'Unable to reach the server. Is the backend running?',
+      'Unable to reach the server.',
       0,
     )
   }

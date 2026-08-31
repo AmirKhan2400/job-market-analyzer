@@ -31,6 +31,7 @@ class AnalysisRepository:
         models = (
             self.session.query(AnalysisModel)
             .filter(AnalysisModel.visitor_id == visitor_id)
+            .order_by(AnalysisModel.created_at.desc())
             .all()
         )
         return AnalysisMapper.to_domain_list(models)
