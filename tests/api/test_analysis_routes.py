@@ -47,6 +47,22 @@ def test_get_analyses_sets_valid_visitor_cookie_when_missing():
         app.dependency_overrides.clear()
 
 
+def test_api_prefix_supports_frontend_deployment_requests():
+    fake_service = Mock()
+    fake_service.get_analysis_history.return_value = []
+
+    app.dependency_overrides[get_analysis_service] = lambda: fake_service
+    try:
+        client = TestClient(app)
+
+        response = client.get("/api/analyses")
+
+        assert response.status_code == 200
+        assert response.json() == []
+    finally:
+        app.dependency_overrides.clear()
+
+
 def test_get_analyses_reuses_existing_visitor_cookie():
     visitor_id = "11111111-1111-4111-8111-111111111111"
     fake_service = Mock()
