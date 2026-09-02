@@ -23,7 +23,7 @@ def _cors_origins() -> list[str]:
 
 app = FastAPI(
     title="AI Job Market Analyzer",
-    version="0.1.0",
+    version="1.1.0",
 )
 
 app.add_middleware(
