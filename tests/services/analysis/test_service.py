@@ -121,6 +121,54 @@ def test_analyze():
     )
 
 
+def test_analyze_uses_unknown_role_for_recommendation_when_extraction_has_no_role():
+    fake_ai = Mock()
+    fake_match = Mock()
+    fake_recommendation = Mock()
+    fake_repo = Mock()
+
+    fake_job = JobOffer(
+        company=None,
+        role=None,
+        required_skills=["Python"],
+        preferred_skills=[],
+    )
+
+    fake_match_result = MatchResult(
+        score=100,
+        matched_skills=["Python"],
+        missing_skills=[],
+    )
+
+    fake_ai.extract_job.return_value = fake_job
+    fake_match.analyze.return_value = fake_match_result
+    fake_recommendation.decide.return_value = "Apply"
+    fake_ai.generate_recommendation.return_value = "Strong fit"
+
+    profile = Mock()
+    profile.skills = ["Python"]
+
+    service = AnalysisService(
+        ai_service=fake_ai,
+        match_service=fake_match,
+        recommendation_service=fake_recommendation,
+        repository=fake_repo,
+    )
+
+    result = service.analyze(
+        profile=profile,
+        description="Machine learning job",
+        visitor_id="11111111-1111-4111-8111-111111111111",
+    )
+
+    assert result.job_offer.role is None
+    fake_ai.generate_recommendation.assert_called_once_with(
+        role="Unknown role",
+        matchResult=fake_match_result,
+        decision="Apply",
+    )
+
+
 def test_get_analysis_history():
     fake_repository = Mock()
 

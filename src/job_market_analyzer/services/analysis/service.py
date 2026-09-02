@@ -5,6 +5,15 @@ from job_market_analyzer.services.ai.service import AIService
 from job_market_analyzer.services.match.service import MatchService
 from job_market_analyzer.services.recommendation.service import RecommendationService
 
+UNKNOWN_ROLE = "Unknown role"
+
+
+def _recommendation_role(role: str | None) -> str:
+    if role is None or not role.strip():
+        return UNKNOWN_ROLE
+
+    return role
+
 
 class AnalysisService:
     def __init__(
@@ -37,7 +46,9 @@ class AnalysisService:
         decision = self.recommendation_service.decide(match.score)
 
         reason = self.ai_service.generate_recommendation(
-            role=job.role, matchResult=match, decision=decision
+            role=_recommendation_role(job.role),
+            matchResult=match,
+            decision=decision,
         )
 
         jobAnalysis = JobAnalysis(
