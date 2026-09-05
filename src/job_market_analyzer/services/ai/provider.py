@@ -9,11 +9,15 @@ class AIProvider(ABC):
     def extract_job(self, description: str) -> JobOffer:
         pass
 
-
     @abstractmethod
     def generate_recommendation(
         self,
         role: str,
         matchResult: MatchResult,
-        decision: str,) -> str:
+        decision: str,
+    ) -> str:
         pass
+
+
+class AIProviderError(Exception):
+    """Raised when an AI provider cannot return a valid application response."""

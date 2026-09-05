@@ -71,7 +71,7 @@ def test_extract_job_raises_when_both_providers_fail():
     fake_primary = Mock()
     fake_fallback = Mock()
 
-    fake_primary.extract_job.side_effect = Exception("Gemini failed")
+    fake_primary.extract_job.side_effect = Exception("Requesty failed")
 
     fake_fallback.extract_job.side_effect = Exception("Groq failed")
 

@@ -11,7 +11,7 @@ const architectureItems = [
   },
   {
     title: 'AI layer',
-    body: 'Gemini and OpenRouter providers share one AI contract. Extraction uses structured JSON schemas, deterministic temperature, and fallback behavior.',
+    body: 'Requesty and OpenRouter providers share one AI contract. Requesty uses a dashboard policy for model fallback, while OpenRouter uses a dashboard preset as gateway-level fallback.',
   },
   {
     title: 'Matching',

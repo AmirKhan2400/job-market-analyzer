@@ -7,14 +7,19 @@ from job_market_analyzer.domain.job import JobOffer
 from job_market_analyzer.services.ai.prompt_loader import load_prompt
 from job_market_analyzer.services.ai.provider import AIProvider
 
-model_name = "deepseek/deepseek-v4-flash-0731"
 extraction_prompt_filename = "extraction.txt"
 recommendation_prompt_filename = "recommendation.txt"
 
 
 class OpenRouterProvider(AIProvider):
-    def __init__(self, client: OpenAI, extraction_temperature: float = 0.0):
+    def __init__(
+        self,
+        client: OpenAI,
+        preset: str,
+        extraction_temperature: float = 0.0,
+    ):
         self.client = client
+        self.preset = preset
         self.extraction_temperature = extraction_temperature
 
     def extract_job(self, description: str) -> JobOffer:
@@ -32,7 +37,7 @@ class OpenRouterProvider(AIProvider):
         prompt = prompt_template.format(description=description)
 
         response = self.client.chat.completions.create(
-            model=model_name,
+            model=self.preset,
             messages=[
                 {
                     "role": "user",
@@ -85,7 +90,7 @@ class OpenRouterProvider(AIProvider):
         )
 
         response = self.client.chat.completions.create(
-            model=model_name,
+            model=self.preset,
             messages=[
                 {
                     "role": "user",

@@ -41,7 +41,7 @@ def test_extract_job_success():
 
     client.chat.completions.create.return_value = response
 
-    provider = OpenRouterProvider(client)
+    provider = OpenRouterProvider(client=client, preset="@preset/job-analyzer")
 
     description = "OpenAI is looking for a Python Backend Engineer."
 
@@ -67,11 +67,12 @@ def test_extract_job_success():
     assert "nice to have, preferred, a plus" in prompt
     assert "Do not interpret every example as an independent mandatory requirement" in prompt
     assert "Do not invent skills" in prompt
-    schema = client.chat.completions.create.call_args.kwargs["response_format"][
-        "json_schema"
-    ]["schema"]
+    schema = client.chat.completions.create.call_args.kwargs["response_format"]["json_schema"][
+        "schema"
+    ]
     assert "preferred_skills" in schema["properties"]
     assert client.chat.completions.create.call_args.kwargs["temperature"] == 0.0
+    assert client.chat.completions.create.call_args.kwargs["model"] == "@preset/job-analyzer"
 
 
 def test_extract_job_uses_configured_temperature():
@@ -95,7 +96,11 @@ def test_extract_job_uses_configured_temperature():
 
     client.chat.completions.create.return_value = response
 
-    provider = OpenRouterProvider(client, extraction_temperature=0.2)
+    provider = OpenRouterProvider(
+        client=client,
+        preset="@preset/job-analyzer",
+        extraction_temperature=0.2,
+    )
 
     provider.extract_job("OpenAI is looking for a Python Backend Engineer.")
 
@@ -104,7 +109,7 @@ def test_extract_job_uses_configured_temperature():
 
 def test_extract_job_empty_description():
     client = Mock()
-    provider = OpenRouterProvider(client)
+    provider = OpenRouterProvider(client=client, preset="@preset/job-analyzer")
 
     with pytest.raises(
         ValueError,
@@ -132,7 +137,7 @@ def test_generate_recommendation_success():
 
     client.chat.completions.create.return_value = response
 
-    provider = OpenRouterProvider(client)
+    provider = OpenRouterProvider(client=client, preset="@preset/job-analyzer")
 
     match_result = MatchResult(
         score=80,
@@ -153,6 +158,7 @@ def test_generate_recommendation_success():
     )
 
     client.chat.completions.create.assert_called_once()
+    assert client.chat.completions.create.call_args.kwargs["model"] == "@preset/job-analyzer"
     prompt = client.chat.completions.create.call_args.kwargs["messages"][0]["content"]
     assert "Missing Required Skills" in prompt
     assert "Docker" in prompt

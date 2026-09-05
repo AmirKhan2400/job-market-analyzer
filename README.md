@@ -17,8 +17,9 @@ It was built as a practical project for learning and demonstrating **production-
 * Retrieve previously analyzed jobs
 * Load user profiles from YAML
 * Support multiple LLM providers
-* Gemini as the primary LLM provider
-* OpenRouter as an alternative LLM provider
+* Requesty as the primary AI gateway
+* Requesty Fallback Policy support for model-level routing
+* OpenRouter Preset support for gateway-level fallback routing
 * Automatic database migrations with Alembic
 * Persistent PostgreSQL storage with Docker volumes
 * Containerized application using Docker Compose
@@ -59,12 +60,16 @@ The application follows a layered architecture with separation between the API, 
         ┌─────────────────┐         ┌─────────────────┐
         │ LLM Providers   │         │   PostgreSQL    │
         │                 │         │                 │
-        │ Gemini          │         │ SQLAlchemy      │
+        │ Requesty        │         │ SQLAlchemy      │
         │ OpenRouter      │         │ Alembic         │
         └─────────────────┘         └─────────────────┘
 ```
 
 The project separates external AI-provider implementations behind an abstraction, allowing the application to work with different LLM providers without coupling the business logic directly to a specific provider.
+
+Requesty is used as the primary AI gateway. The application sends each AI operation to a configured Requesty Fallback Policy, such as `policy/job-analyzer`. The ordered model chain is maintained in the Requesty dashboard, so changing model priority or replacing models does not require an application deployment.
+
+OpenRouter remains as an application-level gateway fallback. OpenRouter requests use a configured dashboard preset, such as `@preset/job-analyzer`, rather than a hardcoded model ID. This is separate from Requesty's model-level fallback: Requesty can move between models inside one policy, while `AIService` can fall back to OpenRouter if the Requesty gateway itself is unavailable or fails.
 
 ## Tech Stack
 
@@ -78,7 +83,7 @@ The project separates external AI-provider implementations behind an abstraction
 
 ### AI
 
-* Google Gemini
+* Requesty
 * OpenRouter
 * LLM provider abstraction
 * Prompt-based LLM processing
@@ -133,7 +138,7 @@ Job Posting
                 │
         ┌───────┴────────┐
         ▼                ▼
-      Gemini         OpenRouter
+     Requesty        OpenRouter
                 │
                 ▼
         Analysis Result
@@ -244,9 +249,13 @@ POSTGRES_PASSWORD=your_postgres_password
 
 DATABASE_URL=postgresql+psycopg://postgres:your_postgres_password@localhost:5432/job_market_analyzer
 
-GEMINI_API_KEY=your_gemini_api_key
+REQUESTY_API_KEY=your_requesty_api_key
+
+REQUESTY_POLICY=policy/job-analyzer
 
 OPENROUTER_API_KEY=your_openrouter_api_key
+
+OPENROUTER_PRESET=@preset/job-analyzer
 ```
 
 ### 3. Install Dependencies
@@ -420,7 +429,7 @@ Tests cover:
 * Services
 * Repositories
 * AI services
-* Gemini provider
+* Requesty provider
 * OpenRouter provider
 * Profile handling
 * Skill matching
@@ -434,8 +443,10 @@ The application uses Pydantic Settings for configuration.
 | -------------------- | ---------------------------------- |
 | `POSTGRES_PASSWORD`  | PostgreSQL database password       |
 | `DATABASE_URL`       | SQLAlchemy database connection URL |
-| `GEMINI_API_KEY`     | Google Gemini API key              |
+| `REQUESTY_API_KEY`   | Requesty API key                   |
+| `REQUESTY_POLICY`    | Requesty Fallback Policy name      |
 | `OPENROUTER_API_KEY` | OpenRouter API key                 |
+| `OPENROUTER_PRESET`  | OpenRouter dashboard preset name   |
 
 The repository contains `.env.example` as a safe configuration template.
 

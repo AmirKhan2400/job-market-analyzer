@@ -8,7 +8,7 @@ def test_extract_job_uses_fallback_when_primary_fails():
     primary = Mock()
     fallback = Mock()
 
-    primary.extract_job.side_effect = Exception("Gemini API is unavailable")
+    primary.extract_job.side_effect = Exception("Requesty API is unavailable")
 
     expected_job = JobOffer(
         company="OpenAI",

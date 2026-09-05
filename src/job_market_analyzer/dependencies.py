@@ -1,15 +1,14 @@
 from collections.abc import Generator
 
 from fastapi import Depends
-from google import genai
 from openai import OpenAI
 from sqlalchemy.orm import Session
 
-from job_market_analyzer.config import settings
+from job_market_analyzer.config import Settings, settings
 from job_market_analyzer.database.session import SessionLocal
 from job_market_analyzer.repositories.analysis_repository import AnalysisRepository
-from job_market_analyzer.services.ai.gemini import GeminiProvider
 from job_market_analyzer.services.ai.openrouter import OpenRouterProvider
+from job_market_analyzer.services.ai.requesty import RequestyProvider
 from job_market_analyzer.services.ai.service import AIService
 from job_market_analyzer.services.analysis.service import AnalysisService
 from job_market_analyzer.services.match.service import MatchService
@@ -17,11 +16,9 @@ from job_market_analyzer.services.recommendation.service import RecommendationSe
 
 EXTRACT_JOB_TEMPERATURE = 0.0
 
-gemini_client = genai.Client(api_key=settings.gemini_api_key)
-
-gemini_provider = GeminiProvider(
-    client=gemini_client,
-    extraction_temperature=EXTRACT_JOB_TEMPERATURE,
+requesty_client = OpenAI(
+    base_url="https://router.requesty.ai/v1",
+    api_key=settings.requesty_api_key,
 )
 
 openrouter_client = OpenAI(
@@ -29,12 +26,28 @@ openrouter_client = OpenAI(
     api_key=settings.openrouter_api_key,
 )
 
-openrouter_provider = OpenRouterProvider(
-    client=openrouter_client,
-    extraction_temperature=EXTRACT_JOB_TEMPERATURE,
-)
 
-ai_service = AIService(primary=gemini_provider, fallback=openrouter_provider)
+def build_requesty_provider(client: OpenAI, app_settings: Settings) -> RequestyProvider:
+    return RequestyProvider(
+        client=client,
+        policy=app_settings.requesty_policy,
+        extraction_temperature=EXTRACT_JOB_TEMPERATURE,
+    )
+
+
+def build_openrouter_provider(client: OpenAI, app_settings: Settings) -> OpenRouterProvider:
+    return OpenRouterProvider(
+        client=client,
+        preset=app_settings.openrouter_preset,
+        extraction_temperature=EXTRACT_JOB_TEMPERATURE,
+    )
+
+
+requesty_provider = build_requesty_provider(requesty_client, settings)
+
+openrouter_provider = build_openrouter_provider(openrouter_client, settings)
+
+ai_service = AIService(primary=requesty_provider, fallback=openrouter_provider)
 
 match_service = MatchService()
 
