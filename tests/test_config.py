@@ -8,16 +8,23 @@ def test_ai_provider_configuration_is_loaded_from_settings():
     settings = Settings(
         requesty_api_key="requesty-key",
         requesty_policy="policy/job-analyzer",
+        requesty_extraction_policy="policy/Job-Market-Analyzer",
         openrouter_api_key="openrouter-key",
         openrouter_preset="@preset/job-analyzer",
+        openrouter_extraction_preset="@preset/job-market-analyzer-job-extraction",
         database_url="postgresql+psycopg://postgres:password@localhost:5432/db",
         _env_file=None,
     )
 
     assert settings.requesty_api_key == "requesty-key"
     assert settings.requesty_policy == "policy/job-analyzer"
+    assert settings.requesty_extraction_policy == "policy/Job-Market-Analyzer"
     assert settings.openrouter_api_key == "openrouter-key"
     assert settings.openrouter_preset == "@preset/job-analyzer"
+    assert (
+        settings.openrouter_extraction_preset
+        == "@preset/job-market-analyzer-job-extraction"
+    )
 
 
 def test_missing_ai_provider_configuration_fails_clearly(monkeypatch):

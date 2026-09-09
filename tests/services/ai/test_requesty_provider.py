@@ -75,6 +75,23 @@ def test_extract_job_sends_policy_as_model_and_returns_job_offer():
     assert call_kwargs["temperature"] == 0.0
 
 
+def test_extract_job_uses_extraction_policy_when_configured():
+    client = Mock()
+    client.chat.completions.create.return_value = make_response(make_valid_job_content())
+
+    provider = RequestyProvider(
+        client=client,
+        policy="policy/job-analyzer",
+        extraction_policy="policy/Job-Market-Analyzer",
+    )
+
+    provider.extract_job("OpenAI is looking for a Python Backend Engineer.")
+
+    assert client.chat.completions.create.call_args.kwargs["model"] == (
+        "policy/Job-Market-Analyzer"
+    )
+
+
 def test_extract_job_uses_strict_json_schema_without_description():
     client = Mock()
     client.chat.completions.create.return_value = make_response(make_valid_job_content())
@@ -93,6 +110,9 @@ def test_extract_job_uses_strict_json_schema_without_description():
     assert json_schema["strict"] is True
     assert "description" not in schema["properties"]
     assert "description" not in schema.get("required", [])
+    assert set(schema["required"]) == set(schema["properties"])
+    assert "company" in schema["required"]
+    assert schema["additionalProperties"] is False
 
 
 def test_extract_job_builds_extraction_prompt():
@@ -106,8 +126,10 @@ def test_extract_job_builds_extraction_prompt():
     prompt = client.chat.completions.create.call_args.kwargs["messages"][0]["content"]
 
     assert "Classify skills into required_skills and preferred_skills" in prompt
-    assert "nice to have, preferred, a plus" in prompt
-    assert "Do not interpret every example as an independent mandatory requirement" in prompt
+    assert "nice to have" in prompt
+    assert "preferred" in prompt
+    assert "a plus" in prompt
+    assert "Do not interpret every named example as an independent requirement" in prompt
     assert "Do not invent skills" in prompt
 
 

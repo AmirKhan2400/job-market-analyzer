@@ -10,3 +10,7 @@ wheels/
 .venv
 
 .env
+
+# Evaluation run outputs
+evals/results/*
+!evals/results/.gitkeep

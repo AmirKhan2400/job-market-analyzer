@@ -30,6 +30,7 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "alembic>=1.19.1",
+    "matplotlib>=3.10.8",
     "pytest>=9.1.1",
     "ruff>=0.16.2",
 ]
@@ -55,4 +56,4 @@ indent-style = "space"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]

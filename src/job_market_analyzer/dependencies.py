@@ -31,6 +31,7 @@ def build_requesty_provider(client: OpenAI, app_settings: Settings) -> RequestyP
     return RequestyProvider(
         client=client,
         policy=app_settings.requesty_policy,
+        extraction_policy=app_settings.requesty_extraction_policy,
         extraction_temperature=EXTRACT_JOB_TEMPERATURE,
     )
 
@@ -39,6 +40,7 @@ def build_openrouter_provider(client: OpenAI, app_settings: Settings) -> OpenRou
     return OpenRouterProvider(
         client=client,
         preset=app_settings.openrouter_preset,
+        extraction_preset=app_settings.openrouter_extraction_preset,
         extraction_temperature=EXTRACT_JOB_TEMPERATURE,
     )
 

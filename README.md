@@ -67,9 +67,9 @@ The application follows a layered architecture with separation between the API, 
 
 The project separates external AI-provider implementations behind an abstraction, allowing the application to work with different LLM providers without coupling the business logic directly to a specific provider.
 
-Requesty is used as the primary AI gateway. The application sends each AI operation to a configured Requesty Fallback Policy, such as `policy/job-analyzer`. The ordered model chain is maintained in the Requesty dashboard, so changing model priority or replacing models does not require an application deployment.
+Requesty is used as the primary AI gateway. The application sends job extraction to a dedicated Requesty Fallback Policy, such as `policy/Job-Market-Analyzer`, while recommendation generation can use a separate general policy. The ordered model chain is maintained in the Requesty dashboard, so changing model priority or replacing models does not require an application deployment.
 
-OpenRouter remains as an application-level gateway fallback. OpenRouter requests use a configured dashboard preset, such as `@preset/job-analyzer`, rather than a hardcoded model ID. This is separate from Requesty's model-level fallback: Requesty can move between models inside one policy, while `AIService` can fall back to OpenRouter if the Requesty gateway itself is unavailable or fails.
+OpenRouter remains as an application-level gateway fallback. OpenRouter job extraction uses a dedicated dashboard preset, such as `@preset/job-market-analyzer-job-extraction`, while recommendation generation can use a separate general preset. This is separate from Requesty's model-level fallback: Requesty can move between models inside one policy, while `AIService` can fall back to OpenRouter if the Requesty gateway itself is unavailable or fails.
 
 ## Tech Stack
 
@@ -253,9 +253,13 @@ REQUESTY_API_KEY=your_requesty_api_key
 
 REQUESTY_POLICY=policy/job-analyzer
 
+REQUESTY_EXTRACTION_POLICY=policy/Job-Market-Analyzer
+
 OPENROUTER_API_KEY=your_openrouter_api_key
 
 OPENROUTER_PRESET=@preset/job-analyzer
+
+OPENROUTER_EXTRACTION_PRESET=@preset/job-market-analyzer-job-extraction
 ```
 
 ### 3. Install Dependencies
@@ -444,9 +448,11 @@ The application uses Pydantic Settings for configuration.
 | `POSTGRES_PASSWORD`  | PostgreSQL database password       |
 | `DATABASE_URL`       | SQLAlchemy database connection URL |
 | `REQUESTY_API_KEY`   | Requesty API key                   |
-| `REQUESTY_POLICY`    | Requesty Fallback Policy name      |
+| `REQUESTY_POLICY`    | Requesty recommendation/general Fallback Policy name |
+| `REQUESTY_EXTRACTION_POLICY` | Requesty job-extraction Fallback Policy name |
 | `OPENROUTER_API_KEY` | OpenRouter API key                 |
-| `OPENROUTER_PRESET`  | OpenRouter dashboard preset name   |
+| `OPENROUTER_PRESET`  | OpenRouter recommendation/general dashboard preset name |
+| `OPENROUTER_EXTRACTION_PRESET` | OpenRouter job-extraction dashboard preset name |
 
 The repository contains `.env.example` as a safe configuration template.
 

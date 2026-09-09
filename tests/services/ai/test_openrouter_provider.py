@@ -64,13 +64,20 @@ def test_extract_job_success():
     client.chat.completions.create.assert_called_once()
     prompt = client.chat.completions.create.call_args.kwargs["messages"][0]["content"]
     assert "Classify skills into required_skills and preferred_skills" in prompt
-    assert "nice to have, preferred, a plus" in prompt
-    assert "Do not interpret every example as an independent mandatory requirement" in prompt
+    assert "nice to have" in prompt
+    assert "preferred" in prompt
+    assert "a plus" in prompt
+    assert "Do not interpret every named example as an independent requirement" in prompt
     assert "Do not invent skills" in prompt
     schema = client.chat.completions.create.call_args.kwargs["response_format"]["json_schema"][
         "schema"
     ]
     assert "preferred_skills" in schema["properties"]
+    assert "description" not in schema["properties"]
+    assert "description" not in schema.get("required", [])
+    assert set(schema["required"]) == set(schema["properties"])
+    assert "company" in schema["required"]
+    assert schema["additionalProperties"] is False
     assert client.chat.completions.create.call_args.kwargs["temperature"] == 0.0
     assert client.chat.completions.create.call_args.kwargs["model"] == "@preset/job-analyzer"
 
@@ -105,6 +112,40 @@ def test_extract_job_uses_configured_temperature():
     provider.extract_job("OpenAI is looking for a Python Backend Engineer.")
 
     assert client.chat.completions.create.call_args.kwargs["temperature"] == 0.2
+
+
+def test_extract_job_uses_extraction_preset_when_configured():
+    client = Mock()
+
+    response = Mock()
+    response.choices = [
+        Mock(
+            message=Mock(
+                content=json.dumps(
+                    {
+                        "company": "OpenAI",
+                        "role": "Python Backend Engineer",
+                        "required_skills": ["Python"],
+                        "preferred_skills": [],
+                    }
+                )
+            )
+        )
+    ]
+
+    client.chat.completions.create.return_value = response
+
+    provider = OpenRouterProvider(
+        client=client,
+        preset="@preset/job-analyzer",
+        extraction_preset="@preset/job-market-analyzer-job-extraction",
+    )
+
+    provider.extract_job("OpenAI is looking for a Python Backend Engineer.")
+
+    assert client.chat.completions.create.call_args.kwargs["model"] == (
+        "@preset/job-market-analyzer-job-extraction"
+    )
 
 
 def test_extract_job_empty_description():

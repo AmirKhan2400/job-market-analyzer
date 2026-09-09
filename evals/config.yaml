@@ -1,0 +1,120 @@
+benchmark_version: "0.1"
+runs_per_case: 1
+
+extraction:
+  temperature: 0.0
+  max_tokens: 900
+  required_skills_weight: 0.75
+  preferred_skills_weight: 0.25
+
+recommendation:
+  temperature: 0.0
+  max_tokens: 300
+
+selection:
+  minimum_schema_valid_rate: 0.99
+  minimum_required_skills_f1: 0.90
+  minimum_preferred_skills_f1: 0.80
+  maximum_p95_latency_ms: 3000
+
+models:
+  - name: gemini-flash
+    provider: openrouter
+    model: google/gemini-2.5-flash
+    enabled: true
+    reasoning_enabled: false
+    require_parameters: true
+    max_tokens: 900
+    input_per_million: 0.3
+    output_per_million: 2.5
+
+  - name: gpt-5.4-mini
+    provider: openrouter
+    model: openai/gpt-5.4-mini
+    enabled: true
+    reasoning_enabled: true
+    require_parameters: false
+    max_tokens: 2000
+    input_per_million: 0.20
+    output_per_million: 1.25
+
+  - name: claude-haiku
+    provider: openrouter
+    model: anthropic/claude-haiku-4.5
+    enabled: true
+    reasoning_enabled: false
+    require_parameters: true
+    max_tokens: 900
+    input_per_million: 1
+    output_per_million: 5
+
+  - name: deepseek-v4-flash
+    provider: openrouter
+    model: deepseek/deepseek-v4-flash-0731
+    enabled: true
+    reasoning_enabled: false
+    require_parameters: true
+    max_tokens: 1500
+    input_per_million: 0.05
+    output_per_million: 0.16
+
+  - name: Qwen3.8 Flash
+    provider: openrouter
+    model: qwen/qwen3.8-flash
+    enabled: true
+    reasoning_enabled: false
+    require_parameters: true
+    max_tokens: 1200
+    input_per_million: 0.15
+    output_per_million: 0.47
+
+  # FUCKING EXPENSIVE
+  - name: Qwen3.8 Max
+    provider: openrouter
+    model: qwen/qwen3.8-max-0902
+    enabled: false
+    reasoning_enabled: false
+    require_parameters: true
+    max_tokens: 900
+    input_per_million: 2
+    output_per_million: 6
+
+  - name: Mistral-Small-3.2-24b-instruct
+    provider: openrouter
+    model: mistralai/mistral-small-3.2-24b-instruct
+    enabled: true
+    reasoning_enabled: false
+    require_parameters: false
+    max_tokens: 900
+    input_per_million: 0.075
+    output_per_million: 0.2
+
+  - name: Mistral Medium 3.5
+    provider: openrouter
+    model: mistralai/mistral-medium-3-5
+    enabled: true
+    reasoning_enabled: false
+    require_parameters: true
+    max_tokens: 700
+    input_per_million: 1.5
+    output_per_million: 7.5
+
+  - name: GLM 5.2
+    provider: openrouter
+    model: z-ai/glm-5.2
+    enabled: true
+    reasoning_enabled: false
+    require_parameters: true
+    max_tokens: 1500
+    input_per_million: 0.4875
+    output_per_million: 1.56
+
+  - name: GLM 5.3
+    provider: openrouter
+    model: z-ai/glm-5.3
+    enabled: true
+    reasoning_enabled: true
+    require_parameters: true
+    max_tokens: 1500
+    input_per_million: 0.07125
+    output_per_million: 0.2375

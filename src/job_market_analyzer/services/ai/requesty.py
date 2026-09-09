@@ -8,6 +8,7 @@ from job_market_analyzer.domain.analysis import MatchResult
 from job_market_analyzer.domain.job import JobOffer
 from job_market_analyzer.services.ai.prompt_loader import load_prompt
 from job_market_analyzer.services.ai.provider import AIProvider, AIProviderError
+from job_market_analyzer.services.ai.structured_schema import strict_json_schema_for_model
 
 logger = logging.getLogger(__name__)
 
@@ -32,28 +33,29 @@ class RequestyProvider(AIProvider):
         self,
         client: OpenAI,
         policy: str,
+        extraction_policy: str | None = None,
         extraction_temperature: float = 0.0,
     ):
         self.client = client
         self.policy = policy
+        self.extraction_policy = extraction_policy or policy
         self.extraction_temperature = extraction_temperature
 
     def extract_job(self, description: str) -> JobOffer:
         if not description.strip():
             raise ValueError("Job description cannot be empty.")
 
-        schema = JobOffer.model_json_schema()
-        schema["properties"].pop("description", None)
-
-        if "required" in schema:
-            schema["required"] = [field for field in schema["required"] if field != "description"]
+        schema = strict_json_schema_for_model(
+            JobOffer,
+            exclude_properties={"description"},
+        )
 
         prompt_template = load_prompt(extraction_prompt_filename)
         prompt = prompt_template.format(description=description)
 
         try:
             response = self.client.chat.completions.create(
-                model=self.policy,
+                model=self.extraction_policy,
                 messages=[
                     {
                         "role": "user",

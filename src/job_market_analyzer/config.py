@@ -5,8 +5,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     requesty_api_key: str = Field(min_length=1)
     requesty_policy: str = Field(min_length=1)
+    requesty_extraction_policy: str = "policy/Job-Market-Analyzer"
     openrouter_api_key: str = Field(min_length=1)
     openrouter_preset: str = Field(min_length=1)
+    openrouter_extraction_preset: str = "@preset/job-market-analyzer-job-extraction"
     database_url: str = Field(min_length=1)
     backend_cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
     visitor_cookie_secure: bool = False

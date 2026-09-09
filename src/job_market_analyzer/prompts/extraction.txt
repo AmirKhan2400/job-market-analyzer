@@ -7,77 +7,380 @@ sections, and stack descriptions.
 Classify skills into required_skills and preferred_skills based on wording and
 section context.
 
+## SKILL DEFINITION
+
+A skill is a concrete, recognizable, and reusable professional competency that
+is useful for matching a candidate to a job.
+
+Extract a term as a skill only when it represents one of the following:
+
+* A programming language:
+  Python, Go, TypeScript
+* A framework or library:
+  FastAPI, PyTorch, LangGraph
+* A database or infrastructure technology:
+  PostgreSQL, Redis, Kubernetes
+* A specific AI/ML technique:
+  Retrieval-Augmented Generation (RAG), Fine-Tuning, Reinforcement Learning
+* A specific engineering technique or practice:
+  CI/CD, Test-Driven Development, Infrastructure as Code
+* A specific platform or tool:
+  AWS, Docker, Git, Databricks
+* A well-established technical capability:
+  System Design, Data Engineering, MLOps, Distributed Systems,
+  Backend Development, LLM Application Development
+
+Before extracting a skill, ask:
+
+"Would it be useful and natural to put this skill on a candidate's technical
+skills/competencies list and compare it against the job requirement?"
+
+If not, do not extract it.
+
+## REQUIRED SKILLS
+
+Include skills that are explicitly required, expected, central to day-to-day
+responsibilities, or part of the core production stack when the role clearly
+expects hands-on use.
+
+Do not omit an explicitly named required technology simply because it appears
+inside a comma-separated or bullet-point list.
+
+However, distinguish between:
+
+1. Technologies individually required by the employer.
+2. Alternative technologies used only as examples of a broader competency.
+
+If multiple technologies are presented as alternatives, examples, or acceptable
+ways of demonstrating a broader competency, do NOT treat every technology as an
+independent skill requirement.
+
+Example:
+
+"Familiarity with backend programming languages such as Python, TypeScript,
+PHP, or similar."
+
+Do NOT extract:
+
+* Python
+* TypeScript
+* PHP
+
+Extract:
+
+* Backend Development
+
+because the requirement is backend development capability, not proficiency in
+three specific programming languages.
+
+In contrast:
+
+"Our backend is written in Python using FastAPI, and you will work with both
+technologies daily."
+
+Extract:
+
+* Python
+* FastAPI
+
+because these technologies are individually part of the expected working stack.
+
+## PREFERRED SKILLS
+
+Include skills introduced by wording such as:
+
+* nice to have
+* preferred
+* a plus
+* bonus
+* advantage
+* if you have experience with
+* familiarity with
+* or similar optional language
+
+Include technologies listed in clearly optional or preferred sections.
+
+Apply the same alternative-vs-specific requirement rules used for
+required_skills.
+
+## SKILL GRANULARITY AND CONSOLIDATION
+
+Extract resume-level, professionally meaningful skills and capabilities.
+
+Do not extract every individual task, implementation detail, framework feature,
+or technique as a separate skill.
+
+When several requirements describe knowledge or depth within the same broader
+competency, consolidate them into one representative established skill or
+capability.
+
+Prefer established technologies and recognized engineering competencies over
+highly granular subskills.
+
+Keep distinct standalone technologies separate when they represent genuinely
+different competencies.
+
+Do not merge technologies merely because they are related.
+
+A detailed job description should not automatically result in dozens of
+independent skills. Prefer a concise set of meaningful competencies that
+accurately represents what the employer expects a candidate to know.
+
+## SPECIFICITY RULE
+
+Prefer the most specific established skill explicitly supported by the job
+description.
+
+Example:
+
+"Build retrieval-augmented applications using vector databases."
+
+Extract:
+
+* Retrieval-Augmented Generation (RAG)
+* Vector Databases
+
+Do NOT additionally extract:
+
+* Generative AI
+* Artificial Intelligence
+* Data
+
+Broad parent domains should not be extracted when a more meaningful,
+candidate-matchable competency is available.
+
+However, do not over-decompose activities into invented micro-skills.
+
+Example:
+
+"Extract and transform data from customer documents."
+
+Do NOT automatically produce:
+
+* Data Extraction
+* Document Data Extraction
+* Information Extraction
+
+unless the job explicitly treats one of these as a distinct professional
+competency.
+
+## DO NOT EXTRACT
+
+### 1. Broad technology domains or categories
+
+Do NOT extract broad fields that are too general to meaningfully distinguish
+candidates.
+
+Bad:
+
+* AI
+* Artificial Intelligence
+* Generative AI
+* Cloud
+* Backend
+
+Good:
+
+* Retrieval-Augmented Generation (RAG)
+* LLM Application Development
+* AWS
+* FastAPI
+* Backend Development
+
+"Backend Development" may be extracted when the job requires general backend
+engineering competency without requiring one specific backend language or
+framework.
+
+### 2. Generic tasks, responsibilities, or activities
+
+Bad:
+
+* Data Extraction
+* Data Processing
+* Building Applications
+* Developing Solutions
+* Problem Solving
+* Code Development
+
+### 3. Business or industry domains
+
+Do not extract business/domain knowledge unless the job explicitly requires it
+as a distinct professional competency.
+
+Bad:
+
+* Healthcare
+* Finance
+* E-commerce
+* Customer Support
+
+### 4. Outcomes or qualities
+
+Bad:
+
+* Scalability
+* Reliability
+* Performance
+* High Quality
+* Innovation
+* Efficiency
+
+### 5. Vague concepts
+
+Do not extract concepts that cannot meaningfully distinguish candidates.
+
+Bad:
+
+* Technology
+* Software
+* APIs
+* Data
+* Models
+* AI Systems
+
+### 6. Human languages
+
+Do NOT include spoken or written human-language proficiency in
+required_skills or preferred_skills.
+
+Examples that must NOT be extracted:
+
+* German
+* English
+* Italian
+* French
+* Spanish
+* Fluent German
+* Business-level English
+
+Human-language requirements are not technical/professional skills for the
+purpose of this skill-matching system.
+
+## ALTERNATIVES AND EXAMPLES
+
+Pay special attention to wording such as:
+
+* e.g.
+* for example
+* such as
+* including examples like
+* or
+* and/or
+* or comparable
+* or equivalent
+* similar technologies
+* languages such as
+* frameworks such as
+* tools such as
+
+Do not interpret every named example as an independent requirement.
+
+Determine what competency the examples are evidence for.
+
+Example:
+
+"Experience with backend languages such as Python, TypeScript, PHP, or Go."
+
+Extract:
+
+* Backend Development
+
+Do NOT extract all four programming languages.
+
+Example:
+
+"Strong Python experience required; TypeScript is a plus."
+
+Extract:
 required_skills:
-- Include skills, technologies, concepts, or experience that are explicitly
-  required, expected, central to day-to-day responsibilities, or part of the
-  core production stack when the role clearly expects hands-on use.
-- Do not omit an explicitly named required technology simply because it appears
-  inside a comma-separated or bullet-point list.
+
+* Python
 
 preferred_skills:
-- Include skills introduced by wording such as nice to have, preferred, a plus,
-  bonus, advantage, if you have experience with, or similar optional language.
-- Include technologies listed in clearly optional or preferred sections.
 
-Skill granularity and consolidation:
-- Extract resume-level, professionally meaningful skills and capabilities.
-- Do not extract every individual task, implementation detail, framework
-  feature, or technique as a separate skill.
-- When several requirements describe knowledge or depth within the same broader
-  competency, consolidate them into one representative skill or capability.
-- Prefer established technologies and broader engineering competencies over
-  highly granular subskills.
-- Keep distinct standalone technologies separate when they represent genuinely
-  different competencies.
-- Do not merge technologies merely because they are related.
-- A detailed job description should not automatically result in dozens of
-  independent required skills. Prefer a concise set of meaningful competencies
-  that accurately represents what the employer expects a candidate to know.
+* TypeScript
 
-Examples of consolidation:
-- BM25 + vector search + hybrid retrieval + reranking + query rewriting +
-  chunking + embedding model selection
-  -> RAG / Retrieval Engineering
+Here, the languages are individually meaningful requirements rather than
+interchangeable examples.
 
-- App Router + route handlers + server actions
-  -> Next.js
+Example:
 
-- JSON Schema + structured outputs + function calling + runtime validation
-  -> Structured LLM Outputs & Tool Calling
+"Experience with tracing tooling such as Braintrust, Langfuse, Promptfoo or
+OpenTelemetry."
 
-- Prompt caching + batching + model routing
-  -> LLM Cost & Latency Optimization
+Prefer:
+
+* LLM Tracing and Evaluation Tooling
+
+rather than treating every named tool as independently required.
+
+Example:
+
+"Zod or comparable runtime validation."
+
+Prefer:
+
+* Runtime Validation
+
+Do not make Zod independently mandatory unless the posting clearly requires
+Zod specifically.
+
+## CONSOLIDATION EXAMPLES
+
+BM25 + vector search + hybrid retrieval + reranking + query rewriting +
+chunking + embedding model selection
+→ Retrieval-Augmented Generation (RAG) / Retrieval Engineering
+
+App Router + route handlers + server actions
+→ Next.js
+
+JSON Schema + structured outputs + function calling + runtime validation
+→ Structured LLM Outputs & Tool Calling
+
+Prompt caching + batching + model routing
+→ LLM Cost & Latency Optimization
 
 These examples demonstrate the desired level of abstraction. Do not blindly
 apply these mappings when the job description treats one of the underlying
 technologies or techniques as a distinct explicit requirement.
 
-Alternatives and examples:
-- Be careful with wording such as e.g., such as, or comparable, and and/or.
-- Do not interpret every example as an independent mandatory requirement.
-- When examples illustrate a broader required capability, prefer the broader
-  capability where reasonable.
-- For example, "Experience with tracing tooling such as Braintrust, Langfuse,
-  Promptfoo or OpenTelemetry" can be represented as
-  "LLM Tracing and Evaluation Tooling" instead of requiring every named tool.
-- "Zod or comparable runtime validation" should not make Zod mandatory unless
-  the posting clearly requires Zod specifically.
+## NORMALIZATION
 
-Normalization:
-- Prefer common, consistent names for well-known technologies and concepts.
-- Use the full canonical name for common abbreviations where appropriate.
-  Examples:
-  RAG -> Retrieval-Augmented Generation
-  LLM / LLMs -> Large Language Models
-  Postgres -> PostgreSQL
-  K8s -> Kubernetes
-- Do not treat related but different technologies as aliases.
-  For example, GitHub Actions is not the same skill as CI/CD, and PyTorch is
-  not the same skill as Machine Learning.
+Prefer common, consistent names for well-known technologies and concepts.
 
-Extract explicitly mentioned technologies, programming languages, frameworks,
-libraries, tools, platforms, technical concepts, and engineering practices that
-are relevant to the role.
+Use the full canonical name for common abbreviations where appropriate.
+
+Examples:
+
+RAG → Retrieval-Augmented Generation (RAG)
+LLM / LLMs → Large Language Models
+Postgres → PostgreSQL
+K8s → Kubernetes
+
+Do not treat related but different technologies as aliases.
+
+For example:
+
+* GitHub Actions is not automatically the same skill as CI/CD.
+* PyTorch is not automatically the same skill as Machine Learning.
+
+## FINAL VALIDATION
+
+Before returning each required or preferred skill, verify all of the following:
+
+1. Is it a concrete technology, technique, engineering practice, tool,
+   platform, or established professional competency?
+2. Would it naturally appear on a candidate's technical skills or competencies
+   list?
+3. Is it actually supported by the job description?
+4. Is it more useful for candidate matching than a broader parent category?
+5. Is it not merely a task, outcome, vague concept, business domain, or human
+   language?
+6. If multiple technologies were mentioned, are they individually expected,
+   or are they merely alternatives/examples of one broader competency?
+
+If the technologies are merely interchangeable examples of a broader
+competency, extract the broader competency instead of every example.
 
 Do not invent skills or requirements that are not supported by the job
 description.
