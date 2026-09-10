@@ -11,7 +11,11 @@ const architectureItems = [
   },
   {
     title: 'AI layer',
-    body: 'Requesty and OpenRouter providers share one AI contract. Requesty uses a dashboard policy for model fallback, while OpenRouter uses a dashboard preset as gateway-level fallback.',
+    body: 'Requesty and OpenRouter providers share one AI contract. Job extraction uses dedicated dashboard routing, while recommendation can use separate general routing.',
+  },
+  {
+    title: 'Evaluation',
+    body: 'A standalone eval subsystem benchmarks LLM extraction quality, schema validity, latency, token usage, and cost. Results guide Requesty policy and OpenRouter preset choices.',
   },
   {
     title: 'Matching',
@@ -31,6 +35,7 @@ const workflowItems = [
   'The browser keeps the user profile locally and submits canonical skills with a job description.',
   'FastAPI resolves or creates an anonymous visitor cookie before entering the service layer.',
   'AI extracts structured job details and classifies skills as required or preferred.',
+  'Benchmark results inform which models are used in the extraction policy and fallback preset.',
   'A deterministic normalizer canonicalizes aliases such as RAG, LLM, Postgres, K8s, and JS.',
   'The match service scores required skills only and tracks preferred skills separately.',
   'Rules decide Apply, Maybe, or Do Not Apply; AI generates a concise explanation of that result.',
@@ -57,7 +62,7 @@ export function AboutPage() {
           production-oriented AI application: typed frontend integration, a
           clean FastAPI backend, anonymous visitor history, structured AI
           extraction, deterministic skill scoring, PostgreSQL persistence, and
-          testable architecture.
+          benchmark-driven model routing.
         </p>
       </div>
 
@@ -95,8 +100,9 @@ export function AboutPage() {
             The important engineering choice is separation of responsibilities:
             routes handle HTTP, services coordinate business workflows,
             match services keep scoring deterministic, repositories handle
-            persistence, and providers isolate external AI APIs. This keeps the
-            system easier to test and safer to extend.
+            persistence, providers isolate external AI APIs, and evals stay
+            separate from production runtime. This keeps the system easier to
+            test and safer to extend.
           </p>
         </Card>
 
