@@ -6,6 +6,14 @@ The project extracts structured information from job postings, evaluates skill c
 
 It was built as a practical project for learning and demonstrating **production-oriented AI engineering, backend development, frontend development, database design, LLM evaluation, testing, containerized deployment, and static frontend hosting**.
 
+## Live Demo
+
+You can try the frontend demo here:
+
+[Try AI Job Market Analyzer](https://amirkhan2400.github.io/job-market-analyzer/)
+
+The demo allows users to submit a job description, enter a candidate profile, analyze skill matches, view missing skills, receive an AI-powered recommendation, and review previous analyses through anonymous per-visitor history.
+
 ## Features
 
 * Analyze AI/ML job postings against a user's profile
