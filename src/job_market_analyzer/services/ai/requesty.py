@@ -57,6 +57,11 @@ class RequestyProvider(AIProvider):
         prompt_template = load_prompt(extraction_prompt_filename)
         prompt = prompt_template.format(description=description)
 
+        logger.info(
+            "Requesty extraction request started: model=%s max_tokens=%s",
+            self.extraction_policy,
+            self.extraction_max_tokens,
+        )
         try:
             response = self.client.chat.completions.create(
                 model=self.extraction_policy,
@@ -82,18 +87,27 @@ class RequestyProvider(AIProvider):
             raise AIProviderError("Requesty job extraction request failed.") from error
 
         content = _response_content(response)
+        logger.info("Requesty extraction response received: content_length=%s", len(content))
 
         try:
             data = json.loads(content)
         except json.JSONDecodeError as error:
+            logger.warning("Requesty extraction response was not valid JSON.")
             raise AIProviderError("Requesty job extraction response was not valid JSON.") from error
 
         try:
             job_offer = JobOffer.model_validate(data)
         except ValidationError as error:
+            logger.warning("Requesty extraction response failed validation.")
             raise AIProviderError("Requesty job extraction response failed validation.") from error
 
         job_offer.description = description
+        logger.info(
+            "Requesty extraction parsed: company=%s role=%s required_skills=%s",
+            job_offer.company,
+            job_offer.role,
+            len(job_offer.required_skills),
+        )
 
         return job_offer
 
@@ -121,6 +135,11 @@ class RequestyProvider(AIProvider):
             decision=decision,
         )
 
+        logger.info(
+            "Requesty recommendation request started: model=%s max_tokens=%s",
+            self.policy,
+            self.recommendation_max_tokens,
+        )
         try:
             response = self.client.chat.completions.create(
                 model=self.policy,
@@ -136,4 +155,7 @@ class RequestyProvider(AIProvider):
             logger.warning("Requesty recommendation request failed: %s", type(error).__name__)
             raise AIProviderError("Requesty recommendation request failed.") from error
 
-        return _response_content(response)
+        content = _response_content(response)
+        logger.info("Requesty recommendation response received: content_length=%s", len(content))
+
+        return content

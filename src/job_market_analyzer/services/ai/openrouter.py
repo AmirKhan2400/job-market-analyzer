@@ -1,4 +1,5 @@
 import json
+import logging
 
 from openai import OpenAI
 
@@ -10,6 +11,7 @@ from job_market_analyzer.services.ai.structured_schema import strict_json_schema
 
 extraction_prompt_filename = "extraction.txt"
 recommendation_prompt_filename = "recommendation.txt"
+logger = logging.getLogger(__name__)
 
 
 class OpenRouterProvider(AIProvider):
@@ -30,7 +32,6 @@ class OpenRouterProvider(AIProvider):
         self.recommendation_max_tokens = recommendation_max_tokens
 
     def extract_job(self, description: str) -> JobOffer:
-        print("OpenRouter:extract_job")
         if not description.strip():
             raise ValueError("Job description cannot be empty.")
 
@@ -42,6 +43,11 @@ class OpenRouterProvider(AIProvider):
         prompt_template = load_prompt(extraction_prompt_filename)
         prompt = prompt_template.format(description=description)
 
+        logger.info(
+            "OpenRouter extraction request started: model=%s max_tokens=%s",
+            self.extraction_preset,
+            self.extraction_max_tokens,
+        )
         response = self.client.chat.completions.create(
             model=self.extraction_preset,
             messages=[
@@ -63,11 +69,17 @@ class OpenRouterProvider(AIProvider):
         )
 
         content = response.choices[0].message.content
-        print("content: ", content)
+        logger.info("OpenRouter extraction response received: content_length=%s", len(content))
         data = json.loads(content)
 
         job_offer = JobOffer.model_validate(data)
         job_offer.description = description
+        logger.info(
+            "OpenRouter extraction parsed: company=%s role=%s required_skills=%s",
+            job_offer.company,
+            job_offer.role,
+            len(job_offer.required_skills),
+        )
 
         return job_offer
 
@@ -77,7 +89,6 @@ class OpenRouterProvider(AIProvider):
         matchResult: MatchResult,
         decision: str,
     ) -> str:
-        print("OpenRouter:generate_recommendation")
         if not decision.strip():
             raise ValueError("decision cannot be empty.")
 
@@ -96,6 +107,11 @@ class OpenRouterProvider(AIProvider):
             decision=decision,
         )
 
+        logger.info(
+            "OpenRouter recommendation request started: model=%s max_tokens=%s",
+            self.preset,
+            self.recommendation_max_tokens,
+        )
         response = self.client.chat.completions.create(
             model=self.preset,
             messages=[
@@ -107,4 +123,7 @@ class OpenRouterProvider(AIProvider):
             max_tokens=self.recommendation_max_tokens,
         )
 
-        return response.choices[0].message.content
+        content = response.choices[0].message.content
+        logger.info("OpenRouter recommendation response received: content_length=%s", len(content))
+
+        return content

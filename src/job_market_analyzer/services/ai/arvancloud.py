@@ -84,13 +84,26 @@ class ArvanCloudProvider(AIProvider):
         }
 
     def _create_completion(self, payload: dict[str, Any]) -> dict[str, Any]:
+        url = _chat_completions_url(self.base_url)
+        logger.info(
+            "ArvanCloud request started: url=%s model=%s max_tokens=%s",
+            url,
+            payload.get("model"),
+            payload.get("max_tokens"),
+        )
         try:
-            return self.http_post(
-                _chat_completions_url(self.base_url),
+            response = self.http_post(
+                url,
                 self._headers(),
                 payload,
                 self.timeout_seconds,
             )
+            logger.info(
+                "ArvanCloud request completed: model=%s response_keys=%s",
+                payload.get("model"),
+                sorted(response.keys()),
+            )
+            return response
         except HTTPError as error:
             logger.warning(
                 "ArvanCloud request failed with status %s",
@@ -139,10 +152,12 @@ class ArvanCloudProvider(AIProvider):
         )
 
         content = _response_content(response)
+        logger.info("ArvanCloud extraction response received: content_length=%s", len(content))
 
         try:
             data = json.loads(content)
         except json.JSONDecodeError as error:
+            logger.warning("ArvanCloud extraction response was not valid JSON.")
             raise AIProviderError(
                 "ArvanCloud job extraction response was not valid JSON."
             ) from error
@@ -150,11 +165,18 @@ class ArvanCloudProvider(AIProvider):
         try:
             job_offer = JobOffer.model_validate(data)
         except ValidationError as error:
+            logger.warning("ArvanCloud extraction response failed validation.")
             raise AIProviderError(
                 "ArvanCloud job extraction response failed validation."
             ) from error
 
         job_offer.description = description
+        logger.info(
+            "ArvanCloud extraction parsed: company=%s role=%s required_skills=%s",
+            job_offer.company,
+            job_offer.role,
+            len(job_offer.required_skills),
+        )
 
         return job_offer
 
@@ -195,4 +217,10 @@ class ArvanCloudProvider(AIProvider):
             }
         )
 
-        return _response_content(response)
+        content = _response_content(response)
+        logger.info(
+            "ArvanCloud recommendation response received: content_length=%s",
+            len(content),
+        )
+
+        return content

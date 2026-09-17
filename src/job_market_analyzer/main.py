@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -11,14 +12,11 @@ from job_market_analyzer.config import settings
 FRONTEND_DIST = Path(__file__).resolve().parents[2] / "frontend" / "dist"
 FRONTEND_INDEX = FRONTEND_DIST / "index.html"
 FRONTEND_ASSETS = FRONTEND_DIST / "assets"
+logger = logging.getLogger(__name__)
 
 
 def _cors_origins() -> list[str]:
-    return [
-        origin.strip()
-        for origin in settings.backend_cors_origins.split(",")
-        if origin.strip()
-    ]
+    return [origin.strip() for origin in settings.backend_cors_origins.split(",") if origin.strip()]
 
 
 app = FastAPI(
@@ -36,6 +34,11 @@ app.add_middleware(
 
 app.include_router(router)
 app.include_router(router, prefix="/api")
+
+logger.info(
+    "Application started with CORS origins: %s",
+    ", ".join(_cors_origins()) or "<none>",
+)
 
 if FRONTEND_ASSETS.exists():
     app.mount(

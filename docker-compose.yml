@@ -20,13 +20,27 @@ services:
     build: .
     container_name: job-market-analyzer
     ports:
-      - "8000:8000"
+      - "${PORT:-8000}:${PORT:-8000}"
     environment:
+      PORT: ${PORT:-8000}
+      ARVAN_API_KEY: ${ARVAN_API_KEY:-}
+      ARVAN_BASE_URL: ${ARVAN_BASE_URL:-}
+      ARVAN_MODEL: ${ARVAN_MODEL:-}
       REQUESTY_API_KEY: ${REQUESTY_API_KEY}
       REQUESTY_POLICY: ${REQUESTY_POLICY}
+      REQUESTY_EXTRACTION_POLICY: ${REQUESTY_EXTRACTION_POLICY:-policy/Job-Market-Analyzer}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
       OPENROUTER_PRESET: ${OPENROUTER_PRESET}
+      OPENROUTER_EXTRACTION_PRESET: ${OPENROUTER_EXTRACTION_PRESET:-@preset/job-market-analyzer-job-extraction}
       DATABASE_URL: postgresql+psycopg://postgres:${POSTGRES_PASSWORD}@postgres:5432/job_market_analyzer
+      BACKEND_CORS_ORIGINS: ${BACKEND_CORS_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
+      VISITOR_COOKIE_SECURE: ${VISITOR_COOKIE_SECURE:-false}
+      VISITOR_COOKIE_SAMESITE: ${VISITOR_COOKIE_SAMESITE:-lax}
+      ANALYSIS_REQUEST_LIMIT: ${ANALYSIS_REQUEST_LIMIT:-0}
+      ANALYSIS_REQUEST_COOLDOWN_SECONDS: ${ANALYSIS_REQUEST_COOLDOWN_SECONDS:-0}
+      AI_EXTRACTION_MAX_TOKENS: ${AI_EXTRACTION_MAX_TOKENS:-1200}
+      AI_RECOMMENDATION_MAX_TOKENS: ${AI_RECOMMENDATION_MAX_TOKENS:-700}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
     depends_on:
       postgres:
         condition: service_healthy

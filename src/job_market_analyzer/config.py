@@ -1,5 +1,13 @@
+import logging
+import os
+
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+logging.basicConfig(
+    level=os.getenv("LOG_LEVEL", "INFO").upper(),
+    format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
+)
 
 
 class Settings(BaseSettings):
@@ -20,6 +28,7 @@ class Settings(BaseSettings):
     analysis_request_cooldown_seconds: int = 0
     ai_extraction_max_tokens: int = 1200
     ai_recommendation_max_tokens: int = 700
+    log_level: str = "INFO"
 
     model_config = SettingsConfigDict(
         env_file=".env",

@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from job_market_analyzer.api.schemas import AnalyzeJobRequest
@@ -11,6 +13,7 @@ from job_market_analyzer.services.analysis.service import AnalysisService
 from job_market_analyzer.services.rate_limit import AnalysisRateLimiter
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @router.get("/health")
@@ -25,8 +28,14 @@ def enforce_analysis_request_limit(
     decision = limiter.check(visitor_id)
 
     if decision.allowed:
+        logger.info("Analyze request allowed: visitor_id=%s", visitor_id)
         return visitor_id
 
+    logger.warning(
+        "Analyze request rate-limited: visitor_id=%s retry_after_seconds=%s",
+        visitor_id,
+        decision.retry_after_seconds,
+    )
     raise HTTPException(
         status_code=status.HTTP_429_TOO_MANY_REQUESTS,
         detail=(
@@ -43,6 +52,11 @@ def analyze_job(
     visitor_id: str = Depends(enforce_analysis_request_limit),
     service: AnalysisService = Depends(get_analysis_service),
 ):
+    logger.info(
+        "Analyze endpoint received request: visitor_id=%s description_length=%s",
+        visitor_id,
+        len(request.description),
+    )
     return service.analyze(
         profile=request.userProfile,
         description=request.description,
@@ -55,4 +69,5 @@ def get_analyses(
     visitor_id: str = Depends(get_visitor_id),
     service: AnalysisService = Depends(get_analysis_service),
 ) -> list[JobAnalysis]:
+    logger.info("History endpoint received request: visitor_id=%s", visitor_id)
     return service.get_analysis_history(visitor_id=visitor_id)

@@ -1,3 +1,4 @@
+import logging
 from collections.abc import Generator
 
 from fastapi import Depends
@@ -18,6 +19,7 @@ from job_market_analyzer.services.rate_limit import AnalysisRateLimiter
 from job_market_analyzer.services.recommendation.service import RecommendationService
 
 EXTRACT_JOB_TEMPERATURE = 0.0
+logger = logging.getLogger(__name__)
 
 requesty_client = OpenAI(
     base_url="https://router.requesty.ai/v1",
@@ -70,9 +72,28 @@ def build_ai_providers(app_settings: Settings) -> list[AIProvider]:
 
     if app_settings.arvan_api_key and app_settings.arvan_base_url and app_settings.arvan_model:
         providers.append(build_arvan_provider(app_settings))
+    else:
+        missing = [
+            name
+            for name, value in {
+                "ARVAN_API_KEY": app_settings.arvan_api_key,
+                "ARVAN_BASE_URL": app_settings.arvan_base_url,
+                "ARVAN_MODEL": app_settings.arvan_model,
+            }.items()
+            if not value
+        ]
+        logger.warning(
+            "ArvanCloud provider disabled because required settings are missing: %s",
+            ", ".join(missing),
+        )
 
     providers.append(openrouter_provider)
     providers.append(requesty_provider)
+
+    logger.info(
+        "AI provider chain configured: %s",
+        " -> ".join(type(provider).__name__ for provider in providers),
+    )
 
     return providers
 
@@ -90,6 +111,12 @@ recommendation_service = RecommendationService()
 analysis_rate_limiter = AnalysisRateLimiter(
     max_requests=settings.analysis_request_limit,
     cooldown_seconds=settings.analysis_request_cooldown_seconds,
+)
+
+logger.info(
+    "Analysis rate limiter configured: limit=%s cooldown_seconds=%s",
+    settings.analysis_request_limit,
+    settings.analysis_request_cooldown_seconds,
 )
 
 
