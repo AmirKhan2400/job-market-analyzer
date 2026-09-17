@@ -3,10 +3,14 @@ from uuid import UUID
 
 from fastapi.testclient import TestClient
 
-from job_market_analyzer.dependencies import get_analysis_service
+from job_market_analyzer.dependencies import (
+    get_analysis_rate_limiter,
+    get_analysis_service,
+)
 from job_market_analyzer.domain.analysis import JobAnalysis, MatchResult
 from job_market_analyzer.domain.job import JobOffer
 from job_market_analyzer.main import app
+from job_market_analyzer.services.rate_limit import RateLimitDecision
 
 
 def _analysis() -> JobAnalysis:
@@ -161,5 +165,39 @@ def test_analyze_then_history_reuses_server_issued_visitor_cookie():
 
         assert fake_service.analyze.call_args.kwargs["visitor_id"] == visitor_id
         fake_service.get_analysis_history.assert_called_once_with(visitor_id=visitor_id)
+    finally:
+        app.dependency_overrides.clear()
+
+
+def test_analyze_returns_429_when_visitor_reaches_server_limit():
+    fake_service = Mock()
+    fake_limiter = Mock()
+    fake_limiter.check.return_value = RateLimitDecision(
+        allowed=False,
+        retry_after_seconds=45,
+    )
+
+    app.dependency_overrides[get_analysis_service] = lambda: fake_service
+    app.dependency_overrides[get_analysis_rate_limiter] = lambda: fake_limiter
+    try:
+        client = TestClient(app)
+
+        response = client.post(
+            "/analyze",
+            json={
+                "description": "AI Engineer job",
+                "userProfile": {
+                    "name": "Jason",
+                    "skills": ["Python"],
+                },
+            },
+        )
+
+        assert response.status_code == 429
+        assert response.headers["retry-after"] == "45"
+        assert response.json()["detail"] == (
+            "Analysis request limit reached. Please try again in 45 seconds."
+        )
+        fake_service.analyze.assert_not_called()
     finally:
         app.dependency_overrides.clear()

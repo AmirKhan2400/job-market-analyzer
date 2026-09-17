@@ -67,3 +67,29 @@ def test_extract_job_does_not_use_fallback_when_primary_succeeds():
 
     primary.extract_job.assert_called_once()
     fallback.extract_job.assert_not_called()
+
+
+def test_extract_job_tries_provider_chain_in_order_until_success():
+    first = Mock()
+    second = Mock()
+    third = Mock()
+
+    first.extract_job.side_effect = Exception("ArvanCloud failed")
+    second.extract_job.side_effect = Exception("OpenRouter failed")
+
+    expected_job = JobOffer(
+        company="OpenAI",
+        role="Python Backend Engineer",
+        required_skills=["Python"],
+        description="Test job description",
+    )
+    third.extract_job.return_value = expected_job
+
+    service = AIService(providers=[first, second, third])
+
+    result = service.extract_job("Test job description")
+
+    assert result == expected_job
+    first.extract_job.assert_called_once_with("Test job description")
+    second.extract_job.assert_called_once_with("Test job description")
+    third.extract_job.assert_called_once_with("Test job description")

@@ -9,22 +9,29 @@ def test_ai_provider_configuration_is_loaded_from_settings():
         requesty_api_key="requesty-key",
         requesty_policy="policy/job-analyzer",
         requesty_extraction_policy="policy/Job-Market-Analyzer",
+        arvan_api_key="arvan-key",
+        arvan_base_url="https://arvancloudai.ir/gateway/models/test-model/v1",
+        arvan_model="test-model",
         openrouter_api_key="openrouter-key",
         openrouter_preset="@preset/job-analyzer",
         openrouter_extraction_preset="@preset/job-market-analyzer-job-extraction",
+        analysis_request_limit=3,
+        analysis_request_cooldown_seconds=60,
         database_url="postgresql+psycopg://postgres:password@localhost:5432/db",
         _env_file=None,
     )
 
+    assert settings.arvan_api_key == "arvan-key"
+    assert settings.arvan_base_url == "https://arvancloudai.ir/gateway/models/test-model/v1"
+    assert settings.arvan_model == "test-model"
     assert settings.requesty_api_key == "requesty-key"
     assert settings.requesty_policy == "policy/job-analyzer"
     assert settings.requesty_extraction_policy == "policy/Job-Market-Analyzer"
     assert settings.openrouter_api_key == "openrouter-key"
     assert settings.openrouter_preset == "@preset/job-analyzer"
-    assert (
-        settings.openrouter_extraction_preset
-        == "@preset/job-market-analyzer-job-extraction"
-    )
+    assert settings.openrouter_extraction_preset == "@preset/job-market-analyzer-job-extraction"
+    assert settings.analysis_request_limit == 3
+    assert settings.analysis_request_cooldown_seconds == 60
 
 
 def test_missing_ai_provider_configuration_fails_clearly(monkeypatch):
