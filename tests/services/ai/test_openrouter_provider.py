@@ -41,7 +41,11 @@ def test_extract_job_success():
 
     client.chat.completions.create.return_value = response
 
-    provider = OpenRouterProvider(client=client, preset="@preset/job-analyzer")
+    provider = OpenRouterProvider(
+        client=client,
+        preset="@preset/job-analyzer",
+        recommendation_max_tokens=500,
+    )
 
     description = "OpenAI is looking for a Python Backend Engineer."
 
@@ -79,6 +83,7 @@ def test_extract_job_success():
     assert "company" in schema["required"]
     assert schema["additionalProperties"] is False
     assert client.chat.completions.create.call_args.kwargs["temperature"] == 0.0
+    assert client.chat.completions.create.call_args.kwargs["max_tokens"] == 1200
     assert client.chat.completions.create.call_args.kwargs["model"] == "@preset/job-analyzer"
 
 
@@ -150,7 +155,11 @@ def test_extract_job_uses_extraction_preset_when_configured():
 
 def test_extract_job_empty_description():
     client = Mock()
-    provider = OpenRouterProvider(client=client, preset="@preset/job-analyzer")
+    provider = OpenRouterProvider(
+        client=client,
+        preset="@preset/job-analyzer",
+        recommendation_max_tokens=500,
+    )
 
     with pytest.raises(
         ValueError,
@@ -178,7 +187,11 @@ def test_generate_recommendation_success():
 
     client.chat.completions.create.return_value = response
 
-    provider = OpenRouterProvider(client=client, preset="@preset/job-analyzer")
+    provider = OpenRouterProvider(
+        client=client,
+        preset="@preset/job-analyzer",
+        recommendation_max_tokens=500,
+    )
 
     match_result = MatchResult(
         score=80,
@@ -200,6 +213,7 @@ def test_generate_recommendation_success():
 
     client.chat.completions.create.assert_called_once()
     assert client.chat.completions.create.call_args.kwargs["model"] == "@preset/job-analyzer"
+    assert client.chat.completions.create.call_args.kwargs["max_tokens"] == 500
     prompt = client.chat.completions.create.call_args.kwargs["messages"][0]["content"]
     assert "Missing Required Skills" in prompt
     assert "Docker" in prompt

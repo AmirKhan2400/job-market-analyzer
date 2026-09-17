@@ -49,7 +49,11 @@ def test_extract_job_sends_policy_as_model_and_returns_job_offer():
     client = Mock()
     client.chat.completions.create.return_value = make_response(make_valid_job_content())
 
-    provider = RequestyProvider(client=client, policy="policy/job-analyzer")
+    provider = RequestyProvider(
+        client=client,
+        policy="policy/job-analyzer",
+        recommendation_max_tokens=500,
+    )
 
     description = "OpenAI is looking for a Python Backend Engineer."
 
@@ -73,6 +77,7 @@ def test_extract_job_sends_policy_as_model_and_returns_job_offer():
     call_kwargs = client.chat.completions.create.call_args.kwargs
     assert call_kwargs["model"] == "policy/job-analyzer"
     assert call_kwargs["temperature"] == 0.0
+    assert call_kwargs["max_tokens"] == 1200
 
 
 def test_extract_job_uses_extraction_policy_when_configured():
@@ -96,7 +101,11 @@ def test_extract_job_uses_strict_json_schema_without_description():
     client = Mock()
     client.chat.completions.create.return_value = make_response(make_valid_job_content())
 
-    provider = RequestyProvider(client=client, policy="policy/job-analyzer")
+    provider = RequestyProvider(
+        client=client,
+        policy="policy/job-analyzer",
+        recommendation_max_tokens=500,
+    )
 
     provider.extract_job("OpenAI is looking for a Python Backend Engineer.")
 
@@ -228,7 +237,11 @@ def test_generate_recommendation_sends_policy_and_prompt():
     client = Mock()
     client.chat.completions.create.return_value = make_response("Looks good.")
 
-    provider = RequestyProvider(client=client, policy="policy/job-analyzer")
+    provider = RequestyProvider(
+        client=client,
+        policy="policy/job-analyzer",
+        recommendation_max_tokens=500,
+    )
 
     match_result = MatchResult(
         score=75,
@@ -249,6 +262,7 @@ def test_generate_recommendation_sends_policy_and_prompt():
     client.chat.completions.create.assert_called_once()
     call_kwargs = client.chat.completions.create.call_args.kwargs
     assert call_kwargs["model"] == "policy/job-analyzer"
+    assert call_kwargs["max_tokens"] == 500
 
     prompt = call_kwargs["messages"][0]["content"]
     assert "AI Engineer" in prompt

@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     visitor_cookie_samesite: str = "lax"
     analysis_request_limit: int = 0
     analysis_request_cooldown_seconds: int = 0
+    ai_extraction_max_tokens: int = 1200
+    ai_recommendation_max_tokens: int = 700
 
     model_config = SettingsConfigDict(
         env_file=".env",

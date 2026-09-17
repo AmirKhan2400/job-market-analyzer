@@ -17,6 +17,8 @@ def test_ai_provider_configuration_is_loaded_from_settings():
         openrouter_extraction_preset="@preset/job-market-analyzer-job-extraction",
         analysis_request_limit=3,
         analysis_request_cooldown_seconds=60,
+        ai_extraction_max_tokens=1400,
+        ai_recommendation_max_tokens=600,
         database_url="postgresql+psycopg://postgres:password@localhost:5432/db",
         _env_file=None,
     )
@@ -32,6 +34,8 @@ def test_ai_provider_configuration_is_loaded_from_settings():
     assert settings.openrouter_extraction_preset == "@preset/job-market-analyzer-job-extraction"
     assert settings.analysis_request_limit == 3
     assert settings.analysis_request_cooldown_seconds == 60
+    assert settings.ai_extraction_max_tokens == 1400
+    assert settings.ai_recommendation_max_tokens == 600
 
 
 def test_missing_ai_provider_configuration_fails_clearly(monkeypatch):

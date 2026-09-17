@@ -35,11 +35,15 @@ class RequestyProvider(AIProvider):
         policy: str,
         extraction_policy: str | None = None,
         extraction_temperature: float = 0.0,
+        extraction_max_tokens: int = 1200,
+        recommendation_max_tokens: int = 700,
     ):
         self.client = client
         self.policy = policy
         self.extraction_policy = extraction_policy or policy
         self.extraction_temperature = extraction_temperature
+        self.extraction_max_tokens = extraction_max_tokens
+        self.recommendation_max_tokens = recommendation_max_tokens
 
     def extract_job(self, description: str) -> JobOffer:
         if not description.strip():
@@ -71,6 +75,7 @@ class RequestyProvider(AIProvider):
                     },
                 },
                 temperature=self.extraction_temperature,
+                max_tokens=self.extraction_max_tokens,
             )
         except OpenAIError as error:
             logger.warning("Requesty job extraction request failed: %s", type(error).__name__)
@@ -125,6 +130,7 @@ class RequestyProvider(AIProvider):
                         "content": prompt,
                     }
                 ],
+                max_tokens=self.recommendation_max_tokens,
             )
         except OpenAIError as error:
             logger.warning("Requesty recommendation request failed: %s", type(error).__name__)

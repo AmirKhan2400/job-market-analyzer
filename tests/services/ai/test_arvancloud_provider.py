@@ -48,7 +48,11 @@ def test_extract_job_sends_model_and_returns_job_offer():
     client = Mock()
     client.chat.completions.create.return_value = make_response(make_valid_job_content())
 
-    provider = ArvanCloudProvider(client=client, model="test-model")
+    provider = ArvanCloudProvider(
+        client=client,
+        model="test-model",
+        recommendation_max_tokens=500,
+    )
 
     description = "OpenAI is looking for a Python Backend Engineer."
 
@@ -68,6 +72,7 @@ def test_extract_job_sends_model_and_returns_job_offer():
     call_kwargs = client.chat.completions.create.call_args.kwargs
     assert call_kwargs["model"] == "test-model"
     assert call_kwargs["temperature"] == 0.0
+    assert call_kwargs["max_tokens"] == 1200
     assert call_kwargs["response_format"]["json_schema"]["strict"] is True
 
 
@@ -79,7 +84,11 @@ def test_extract_job_request_failure_raises_provider_error():
         body=None,
     )
 
-    provider = ArvanCloudProvider(client=client, model="test-model")
+    provider = ArvanCloudProvider(
+        client=client,
+        model="test-model",
+        recommendation_max_tokens=500,
+    )
 
     with pytest.raises(
         AIProviderError,
@@ -92,7 +101,11 @@ def test_generate_recommendation_sends_model_and_prompt():
     client = Mock()
     client.chat.completions.create.return_value = make_response("Looks good.")
 
-    provider = ArvanCloudProvider(client=client, model="test-model")
+    provider = ArvanCloudProvider(
+        client=client,
+        model="test-model",
+        recommendation_max_tokens=500,
+    )
 
     match_result = MatchResult(
         score=75,
@@ -112,4 +125,5 @@ def test_generate_recommendation_sends_model_and_prompt():
 
     call_kwargs = client.chat.completions.create.call_args.kwargs
     assert call_kwargs["model"] == "test-model"
+    assert call_kwargs["max_tokens"] == 500
     assert "AI Engineer" in call_kwargs["messages"][0]["content"]

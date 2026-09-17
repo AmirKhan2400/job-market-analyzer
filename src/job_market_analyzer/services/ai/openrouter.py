@@ -19,11 +19,15 @@ class OpenRouterProvider(AIProvider):
         preset: str,
         extraction_preset: str | None = None,
         extraction_temperature: float = 0.0,
+        extraction_max_tokens: int = 1200,
+        recommendation_max_tokens: int = 700,
     ):
         self.client = client
         self.preset = preset
         self.extraction_preset = extraction_preset or preset
         self.extraction_temperature = extraction_temperature
+        self.extraction_max_tokens = extraction_max_tokens
+        self.recommendation_max_tokens = recommendation_max_tokens
 
     def extract_job(self, description: str) -> JobOffer:
         print("OpenRouter:extract_job")
@@ -55,6 +59,7 @@ class OpenRouterProvider(AIProvider):
                 },
             },
             temperature=self.extraction_temperature,
+            max_tokens=self.extraction_max_tokens,
         )
 
         content = response.choices[0].message.content
@@ -99,6 +104,7 @@ class OpenRouterProvider(AIProvider):
                     "content": prompt,
                 }
             ],
+            max_tokens=self.recommendation_max_tokens,
         )
 
         return response.choices[0].message.content

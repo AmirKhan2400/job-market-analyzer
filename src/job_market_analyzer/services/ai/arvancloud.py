@@ -34,10 +34,14 @@ class ArvanCloudProvider(AIProvider):
         client: OpenAI,
         model: str,
         extraction_temperature: float = 0.0,
+        extraction_max_tokens: int = 1200,
+        recommendation_max_tokens: int = 700,
     ):
         self.client = client
         self.model = model
         self.extraction_temperature = extraction_temperature
+        self.extraction_max_tokens = extraction_max_tokens
+        self.recommendation_max_tokens = recommendation_max_tokens
 
     def extract_job(self, description: str) -> JobOffer:
         if not description.strip():
@@ -69,6 +73,7 @@ class ArvanCloudProvider(AIProvider):
                     },
                 },
                 temperature=self.extraction_temperature,
+                max_tokens=self.extraction_max_tokens,
             )
         except OpenAIError as error:
             logger.warning(
@@ -130,6 +135,7 @@ class ArvanCloudProvider(AIProvider):
                         "content": prompt,
                     }
                 ],
+                max_tokens=self.recommendation_max_tokens,
             )
         except OpenAIError as error:
             logger.warning(
