@@ -10,7 +10,7 @@ def test_ai_provider_configuration_is_loaded_from_settings():
         requesty_policy="policy/job-analyzer",
         requesty_extraction_policy="policy/Job-Market-Analyzer",
         arvan_api_key="arvan-key",
-        arvan_base_url="https://arvancloudai.ir/gateway/models/test-model/v1",
+        arvan_base_url="https://api.arvancloudai.ir/v1",
         arvan_model="test-model",
         openrouter_api_key="openrouter-key",
         openrouter_preset="@preset/job-analyzer",
@@ -24,7 +24,7 @@ def test_ai_provider_configuration_is_loaded_from_settings():
     )
 
     assert settings.arvan_api_key == "arvan-key"
-    assert settings.arvan_base_url == "https://arvancloudai.ir/gateway/models/test-model/v1"
+    assert settings.arvan_base_url == "https://api.arvancloudai.ir/v1"
     assert settings.arvan_model == "test-model"
     assert settings.requesty_api_key == "requesty-key"
     assert settings.requesty_policy == "policy/job-analyzer"

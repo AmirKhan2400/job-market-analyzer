@@ -19,15 +19,6 @@ from job_market_analyzer.services.recommendation.service import RecommendationSe
 
 EXTRACT_JOB_TEMPERATURE = 0.0
 
-arvan_client = (
-    OpenAI(
-        base_url=settings.arvan_base_url,
-        api_key=settings.arvan_api_key,
-    )
-    if settings.arvan_api_key and settings.arvan_base_url
-    else None
-)
-
 requesty_client = OpenAI(
     base_url="https://router.requesty.ai/v1",
     api_key=settings.requesty_api_key,
@@ -40,11 +31,11 @@ openrouter_client = OpenAI(
 
 
 def build_arvan_provider(
-    client: OpenAI,
     app_settings: Settings,
 ) -> ArvanCloudProvider:
     return ArvanCloudProvider(
-        client=client,
+        api_key=app_settings.arvan_api_key,
+        base_url=app_settings.arvan_base_url,
         model=app_settings.arvan_model,
         extraction_temperature=EXTRACT_JOB_TEMPERATURE,
         extraction_max_tokens=app_settings.ai_extraction_max_tokens,
@@ -77,8 +68,8 @@ def build_openrouter_provider(client: OpenAI, app_settings: Settings) -> OpenRou
 def build_ai_providers(app_settings: Settings) -> list[AIProvider]:
     providers: list[AIProvider] = []
 
-    if arvan_client is not None and app_settings.arvan_model:
-        providers.append(build_arvan_provider(arvan_client, app_settings))
+    if app_settings.arvan_api_key and app_settings.arvan_base_url and app_settings.arvan_model:
+        providers.append(build_arvan_provider(app_settings))
 
     providers.append(openrouter_provider)
     providers.append(requesty_provider)

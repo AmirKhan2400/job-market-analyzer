@@ -14,7 +14,7 @@ def make_settings() -> Settings:
         requesty_policy="policy/job-analyzer",
         requesty_extraction_policy="policy/Job-Market-Analyzer",
         arvan_api_key="arvan-key",
-        arvan_base_url="https://arvancloudai.ir/gateway/models/test-model/v1",
+        arvan_base_url="https://api.arvancloudai.ir/v1",
         arvan_model="test-model",
         openrouter_api_key="openrouter-key",
         openrouter_preset="@preset/job-analyzer",
@@ -36,8 +36,10 @@ def test_build_requesty_provider_injects_policy_from_settings():
 
 
 def test_build_arvan_provider_injects_model_from_settings():
-    provider = build_arvan_provider(Mock(), make_settings())
+    provider = build_arvan_provider(make_settings())
 
+    assert provider.api_key == "arvan-key"
+    assert provider.base_url == "https://api.arvancloudai.ir/v1"
     assert provider.model == "test-model"
     assert provider.extraction_max_tokens == 1400
     assert provider.recommendation_max_tokens == 600
